@@ -1,4 +1,5 @@
 package-as: JPack
 
 move-folders:
-	JPack/JPack_Ex: JPack_Ex
+	JPack/ex: JPack_Ex
+	JPack/broker: JPack_broker
