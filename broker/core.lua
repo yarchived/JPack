@@ -41,17 +41,3 @@ dataobj.OnClick = function(_, button)
 	JPack:Pack(access, order)
 end
 
-local icon = LibStub("LibDBIcon-1.0")
-function JPack_LoadMMIcon()
-	icon:Register("JPack", dataobj, JPackMMIconDB)
-end
-
-function JPack_ToggleMMIcon()
-	if JPackMMIconDB.hide then
-		JPackMMIconDB.hide = false
-		icon:Show("JPack")
-	else
-		JPackMMIconDB.hide = true
-		icon:Hide("JPack")
-	end
-end
