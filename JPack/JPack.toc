@@ -1,0 +1,14 @@
+## Interface: 30000
+
+## Title: |cff32cd32J|rPack
+## Notes: Quick (re)sort out your items in your bags/bank/guildbank!
+## Notes-zhCN: 背包整理
+## Version: 0.6 alpha
+## SavedVariables: JPackDB, JPackMMIconDB
+## OptionalDeps: tekDebug
+
+## Author: Jason Green, yleaf
+## Email: guileen@gmail.com
+## X-Website: http://wow-jpack.googlecode.com/
+
+load.xml
