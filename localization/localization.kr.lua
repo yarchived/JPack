@@ -25,7 +25,6 @@ L["Unknown command"] = "알 수 없는 명령어"
 -- Help info
 L["Slash command"] = "명령어"
 L["Pack"] = "정리"
-L["Toggle minimap icon"] = "미니맵 아이콘 보이기/숨기기"
 L["Set sequence to asc"] = "오름차순으로 설정"
 L["Set sequence to desc"] = "내림차순으로 설정"
 L["Save to the bank"] = "은행에 넣기"

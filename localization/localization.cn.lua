@@ -24,7 +24,6 @@ L["Unknown command"] = "未知命令"
 -- Help info
 L["Slash command"] = "命令"
 L["Pack"] = "整理"
-L["Toggle minimap icon"] = "显示/隐藏小地图图标"
 L["Set sequence to asc"] = "正序整理"
 L["Set sequence to desc"] = "逆序整理"
 L["Save to the bank"] = "保存到银行"

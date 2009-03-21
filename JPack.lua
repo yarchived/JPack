@@ -881,9 +881,7 @@ SlashCmdList.JPACK = function(msg)
 	local a,b,c=strfind(msg, "(%S+)")
 	if not c then JPack:Pack(); return end
 	c = strlower(c)
-	if(c=="minimap" or c=="mm")then
-		if JPack_ToggleMMIcon then JPack_ToggleMMIcon() end
-	elseif(c=="asc")then
+	if(c=="asc")then
 		JPack:Pack(nil, 1)
 	elseif(c=="desc")then
 		JPack:Pack(nil, 2)
@@ -895,7 +893,6 @@ SlashCmdList.JPACK = function(msg)
 		local text = "%s - |cffffffff%s|r"
 		print(L["Slash command"]..": /jpack |cffffffffor|r /jp")
 		print(format(text, "/jp", L["Pack"]))
-		print(format(text, "/jp minimap |cffffffffor|r mm", L["Toggle minimap icon"]))
 		print(format(text, "/jp asc", L["Set sequence to asc"]))
 		print(format(text, "/jp desc", L["Set sequence to desc"]))
 		print(format(text, "/jp deposit |cffffffffor|r save", L["Save to the bank"]))

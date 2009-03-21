@@ -23,7 +23,6 @@ L["Unknown command"] = "Unknown command"
 -- Help info
 L["Slash command"] = "Slash command"
 L["Pack"] = "Pack"
-L["Toggle minimap icon"] = "Toggle minimap icon"
 L["Set sequence to asc"] = "Set sequence to asc"
 L["Set sequence to desc"] = "Set sequence to desc"
 L["Save to the bank"] = "Save to the bank"
