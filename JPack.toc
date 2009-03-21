@@ -4,7 +4,7 @@
 ## Notes: Quick (re)sort out your items in your bags/bank/guildbank!
 ## Notes-zhCN: 背包整理
 ## Version: 0.6 alpha
-## SavedVariables: JPackDB, JPackMMIconDB
+## SavedVariables: JPackDB
 ## OptionalDeps: tekDebug
 
 ## Author: Jason Green, yleaf

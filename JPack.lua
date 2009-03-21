@@ -688,20 +688,19 @@ end
 
 JPack:SetScript("OnEvent", function(self, event, ...) debug(event); self[event](self, ...) end)
 
-JPack:RegisterEvent"VARIABLES_LOADED"
+JPack:RegisterEvent"ADDON_LOADED"
 JPack:RegisterEvent"BANKFRAME_OPENED"
 JPack:RegisterEvent"BANKFRAME_CLOSED"
 JPack:RegisterEvent"GUILDBANKFRAME_CLOSED"
 JPack:RegisterEvent"GUILDBANKFRAME_OPENED"
 
 
-function JPack:VARIABLES_LOADED()
+function JPack:ADDON_LOADED(addon)
+	if addon ~= 'JPack' then return end
 	JPackDB = JPackDB or {}
-	JPackMMIconDB = JPackMMIconDB or {}
-	if JPack_LoadMMIcon then JPack_LoadMMIcon() end
-	
+
 	-- welcome!
-	--print(string.format('%s %s', version, L["HELP"]))
+	print(string.format('%s %s', version, L["HELP"]))
 end
 
 function JPack:BANKFRAME_OPENED()

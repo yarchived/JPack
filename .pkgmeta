@@ -1,1 +1,4 @@
 package-as: JPack
+
+move-folders:
+	JPack/JPack_Ex: JPack_Ex
