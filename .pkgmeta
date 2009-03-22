@@ -2,4 +2,4 @@ package-as: JPack
 
 move-folders:
 	JPack/ex: JPack_Ex
-	JPack/broker: JPack_broker
+	JPack/broker: JPack_Broker

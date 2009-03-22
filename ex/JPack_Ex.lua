@@ -7,6 +7,7 @@
 -- <= == == == == == == == == == == == == =>
 
 JPack_Ex = CreateFrame("Frame", "JPack_Ex")
+local L = JPack_Ex_Locale
 
 function JPack_Ex:OnEvent()
 	if ( event == "PLAYER_ENTERING_WORLD" ) then
@@ -63,11 +64,11 @@ function SetJPack_ExButton()
 		f:SetWidth(45)
 		f:SetHeight(25)
 		f:SetPoint("TOPRIGHT", -50, -40)
-		f:SetText(BUTTON_TEXT)
+		f:SetText(L.BUTTON_TEXT)
 		f:RegisterForClicks('anyUp')
 		f:SetScript("OnEnter", function(f)
 				GameTooltip:SetOwner(f, "ANCHOR_RIGHT");
-				GameTooltip:SetText(BUTTON_TOOLTIP)
+				GameTooltip:SetText(L.BUTTON_TOOLTIP)
 				GameTooltip:Show();
 			end
 		);
@@ -81,11 +82,11 @@ function SetJPack_ExButton()
 		bf:SetWidth(45)
 		bf:SetHeight(25)
 		bf:SetPoint("TOPRIGHT", -50, -40)
-		bf:SetText(BUTTON_TEXT)
+		bf:SetText(L.BUTTON_TEXT)
 		bf:RegisterForClicks('anyUp')
 		bf:SetScript("OnEnter", function(bf)
 				GameTooltip:SetOwner(bf, "ANCHOR_RIGHT");
-				GameTooltip:SetText(BUTTON_TOOLTIP)
+				GameTooltip:SetText(L.BUTTON_TOOLTIP)
 				GameTooltip:Show();
 			end
 		);
@@ -101,11 +102,11 @@ function SetJPack_ExButton()
 		f:SetWidth(45)
 		f:SetHeight(25)
 		f:SetPoint("TOPRIGHT", -15, -35)
-		f:SetText(BUTTON_TEXT)
+		f:SetText(L.BUTTON_TEXT)
 		f:RegisterForClicks('anyUp')
 		f:SetScript("OnEnter", function(f)
 				GameTooltip:SetOwner(f, "ANCHOR_RIGHT");
-				GameTooltip:SetText(BUTTON_TOOLTIP)
+				GameTooltip:SetText(L.BUTTON_TOOLTIP)
 				GameTooltip:Show();
 			end
 		);
@@ -119,11 +120,11 @@ function SetJPack_ExButton()
 		bf:SetWidth(45)
 		bf:SetHeight(25)
 		bf:SetPoint("TOPRIGHT", -15, -35)
-		bf:SetText(BUTTON_TEXT)
+		bf:SetText(L.BUTTON_TEXT)
 		bf:RegisterForClicks('anyUp')
 		bf:SetScript("OnEnter", function(bf)
 				GameTooltip:SetOwner(bf, "ANCHOR_RIGHT");
-				GameTooltip:SetText(BUTTON_TOOLTIP)
+				GameTooltip:SetText(L.BUTTON_TOOLTIP)
 				GameTooltip:Show();
 			end
 		);
@@ -139,11 +140,11 @@ function SetJPack_ExButton()
 		f:SetWidth(45)
 		f:SetHeight(20)
 		f:SetPoint("TOPRIGHT", -40, 20)
-		f:SetText(BUTTON_TEXT)
+		f:SetText(L.BUTTON_TEXT)
 		f:RegisterForClicks('anyUp')
 		f:SetScript("OnEnter", function(f)
 				GameTooltip:SetOwner(f, "ANCHOR_RIGHT");
-				GameTooltip:SetText(BUTTON_TOOLTIP)
+				GameTooltip:SetText(L.BUTTON_TOOLTIP)
 				GameTooltip:Show();
 			end
 		);
@@ -157,11 +158,11 @@ function SetJPack_ExButton()
 		bf:SetWidth(45)
 		bf:SetHeight(20)
 		bf:SetPoint("TOPRIGHT", -40, 20)
-		bf:SetText(BUTTON_TEXT)
+		bf:SetText(L.BUTTON_TEXT)
 		bf:RegisterForClicks('anyUp')
 		bf:SetScript("OnEnter", function(bf)
 				GameTooltip:SetOwner(bf, "ANCHOR_RIGHT");
-				GameTooltip:SetText(BUTTON_TOOLTIP)
+				GameTooltip:SetText(L.BUTTON_TOOLTIP)
 				GameTooltip:Show();
 			end
 		);
@@ -177,11 +178,11 @@ function SetJPack_ExButton()
 		f:SetWidth(60)
 		f:SetHeight(20)
 		f:SetPoint("TOPRIGHT", -105, -6)
-		f:SetText(BUTTON_TEXT)
+		f:SetText(L.BUTTON_TEXT)
 		f:RegisterForClicks('anyUp')
 		f:SetScript("OnEnter", function(f)
 				GameTooltip:SetOwner(f, "ANCHOR_RIGHT");
-				GameTooltip:SetText(BUTTON_TOOLTIP)
+				GameTooltip:SetText(L.BUTTON_TOOLTIP)
 				GameTooltip:Show();
 			end
 		);
@@ -197,11 +198,11 @@ function SetJPack_ExButton()
 			bf:SetWidth(60)
 			bf:SetHeight(20)
 			bf:SetPoint("TOPRIGHT", -105, -6)
-			bf:SetText(BUTTON_TEXT)
+			bf:SetText(L.BUTTON_TEXT)
 			bf:RegisterForClicks('anyUp')
 			bf:SetScript("OnEnter", function(bf)
 					GameTooltip:SetOwner(bf, "ANCHOR_RIGHT");
-					GameTooltip:SetText(BUTTON_TOOLTIP)
+					GameTooltip:SetText(L.BUTTON_TOOLTIP)
 					GameTooltip:Show();
 				end
 			);
@@ -218,11 +219,11 @@ function SetJPack_ExButton()
 		f:SetWidth(45)
 		f:SetHeight(20)
 		f:SetPoint("TOPRIGHT", -5, 20)
-		f:SetText(BUTTON_TEXT)
+		f:SetText(L.BUTTON_TEXT)
 		f:RegisterForClicks('anyUp')
 		f:SetScript("OnEnter", function(f)
 				GameTooltip:SetOwner(f, "ANCHOR_RIGHT");
-				GameTooltip:SetText(BUTTON_TOOLTIP)
+				GameTooltip:SetText(L.BUTTON_TOOLTIP)
 				GameTooltip:Show();
 			end
 		);
@@ -236,11 +237,11 @@ function SetJPack_ExButton()
 		bf:SetWidth(45)
 		bf:SetHeight(20)
 		bf:SetPoint("TOPRIGHT", -5, 20)
-		bf:SetText(BUTTON_TEXT)
+		bf:SetText(L.BUTTON_TEXT)
 		bf:RegisterForClicks('anyUp')
 		bf:SetScript("OnEnter", function(bf)
 				GameTooltip:SetOwner(bf, "ANCHOR_RIGHT");
-				GameTooltip:SetText(BUTTON_TOOLTIP)
+				GameTooltip:SetText(L.BUTTON_TOOLTIP)
 				GameTooltip:Show();
 			end
 		);
@@ -256,11 +257,11 @@ function SetJPack_ExButton()
 		f:SetWidth(45)
 		f:SetHeight(20)
 		f:SetPoint("TOPRIGHT", -30, -6)
-		f:SetText(BUTTON_TEXT)
+		f:SetText(L.BUTTON_TEXT)
 		f:RegisterForClicks('anyUp')
 		f:SetScript("OnEnter", function(f)
 				GameTooltip:SetOwner(f, "ANCHOR_RIGHT");
-				GameTooltip:SetText(BUTTON_TOOLTIP)
+				GameTooltip:SetText(L.BUTTON_TOOLTIP)
 				GameTooltip:Show();
 			end
 		);
@@ -274,11 +275,11 @@ function SetJPack_ExButton()
 		bf:SetWidth(45)
 		bf:SetHeight(20)
 		bf:SetPoint("TOPRIGHT", -30, -6)
-		bf:SetText(BUTTON_TEXT)
+		bf:SetText(L.BUTTON_TEXT)
 		bf:RegisterForClicks('anyUp')
 		bf:SetScript("OnEnter", function(bf)
 				GameTooltip:SetOwner(bf, "ANCHOR_RIGHT");
-				GameTooltip:SetText(BUTTON_TOOLTIP)
+				GameTooltip:SetText(L.BUTTON_TOOLTIP)
 				GameTooltip:Show();
 			end
 		);
@@ -294,11 +295,11 @@ function SetJPack_ExButton()
 		f:SetWidth(45)
 		f:SetHeight(20)
 		f:SetPoint("TOPRIGHT", -5, 20)
-		f:SetText(BUTTON_TEXT)
+		f:SetText(L.BUTTON_TEXT)
 		f:RegisterForClicks('anyUp')
 		f:SetScript("OnEnter", function(f)
 				GameTooltip:SetOwner(f, "ANCHOR_RIGHT");
-				GameTooltip:SetText(BUTTON_TOOLTIP)
+				GameTooltip:SetText(L.BUTTON_TOOLTIP)
 				GameTooltip:Show();
 			end
 		);
@@ -312,11 +313,11 @@ function SetJPack_ExButton()
 		bf:SetWidth(45)
 		bf:SetHeight(20)
 		bf:SetPoint("TOPRIGHT", -35, -40)
-		bf:SetText(BUTTON_TEXT)
+		bf:SetText(L.BUTTON_TEXT)
 		bf:RegisterForClicks('anyUp')
 		bf:SetScript("OnEnter", function(bf)
 				GameTooltip:SetOwner(bf, "ANCHOR_RIGHT");
-				GameTooltip:SetText(BUTTON_TOOLTIP)
+				GameTooltip:SetText(L.BUTTON_TOOLTIP)
 				GameTooltip:Show();
 			end
 		);
@@ -332,11 +333,11 @@ function SetJPack_ExButton()
 		f:SetWidth(45)
 		f:SetHeight(20)
 		f:SetPoint("TOPRIGHT", -10, 20)
-		f:SetText(BUTTON_TEXT)
+		f:SetText(L.BUTTON_TEXT)
 		f:RegisterForClicks('anyUp')
 		f:SetScript("OnEnter", function(f)
 				GameTooltip:SetOwner(f, "ANCHOR_RIGHT");
-				GameTooltip:SetText(BUTTON_TOOLTIP)
+				GameTooltip:SetText(L.BUTTON_TOOLTIP)
 				GameTooltip:Show();
 			end
 		);
@@ -350,11 +351,11 @@ function SetJPack_ExButton()
 		bf:SetWidth(45)
 		bf:SetHeight(20)
 		bf:SetPoint("TOPRIGHT", -10, 20)
-		bf:SetText(BUTTON_TEXT)
+		bf:SetText(L.BUTTON_TEXT)
 		bf:RegisterForClicks('anyUp')
 		bf:SetScript("OnEnter", function(bf)
 				GameTooltip:SetOwner(bf, "ANCHOR_RIGHT");
-				GameTooltip:SetText(BUTTON_TOOLTIP)
+				GameTooltip:SetText(L.BUTTON_TOOLTIP)
 				GameTooltip:Show();
 			end
 		);
@@ -370,11 +371,11 @@ function SetJPack_ExButton()
 		f:SetWidth(45)
 		f:SetHeight(20)
 		f:SetPoint("TOPRIGHT", -10, -28)
-		f:SetText(BUTTON_TEXT)
+		f:SetText(L.BUTTON_TEXT)
 		f:RegisterForClicks('anyUp')
 		f:SetScript("OnEnter", function(f)
 				GameTooltip:SetOwner(f, "ANCHOR_RIGHT");
-				GameTooltip:SetText(BUTTON_TOOLTIP)
+				GameTooltip:SetText(L.BUTTON_TOOLTIP)
 				GameTooltip:Show();
 			end
 		);
@@ -388,11 +389,11 @@ function SetJPack_ExButton()
 		bf:SetWidth(45)
 		bf:SetHeight(20)
 		bf:SetPoint("TOPRIGHT", -35, -40)
-		bf:SetText(BUTTON_TEXT)
+		bf:SetText(L.BUTTON_TEXT)
 		bf:RegisterForClicks('anyUp')
 		bf:SetScript("OnEnter", function(bf)
 				GameTooltip:SetOwner(bf, "ANCHOR_RIGHT");
-				GameTooltip:SetText(BUTTON_TOOLTIP)
+				GameTooltip:SetText(L.BUTTON_TOOLTIP)
 				GameTooltip:Show();
 			end
 		);

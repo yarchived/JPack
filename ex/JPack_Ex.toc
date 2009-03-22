@@ -6,6 +6,5 @@
 ## e-mail: zyleon@sohu.com
 ## Dependencies: JPack
 ## Version: 0.52
-## X-Revision: 
 localization.lua
 JPack_Ex.lua
