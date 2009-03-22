@@ -26,14 +26,3 @@ L["Set sequence to desc"] = "逆序整理"
 L["Save to the bank"] = "保存到銀行"
 L["Load from the bank"] = "從銀行取出"
 L["Print help info"] = "顯示幫助"
-
--- LDB support
-L["Sequence"] = "整理順序"
-L["asc"] = "正序"
-L["desc"] = "逆序"
-
-L["Click"] = "點擊"
-L["Shift + Left-Click"] = "Shift + 左鍵"
-L["Ctrl + Left-Click"] = "Ctrl + 左鍵"
-L["Shift + Right-Click"] = "Shift + 右鍵"
-L["Ctrl + Right-Click"] = "Ctrl + 右鍵"

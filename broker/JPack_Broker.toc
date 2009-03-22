@@ -1,4 +1,6 @@
 ## Interface: 30000
+## Title: JPack Broker
+## Notes: Broker for jpack!
 ## Dependencies: JPack
 
 LibStub.lua

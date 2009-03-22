@@ -28,14 +28,3 @@ L["Set sequence to desc"] = "Set sequence to desc"
 L["Save to the bank"] = "Save to the bank"
 L["Load from the bank"] = "Load from the bank"
 L["Print help info"] = "Print help info"
-
--- LDB support
-L["Sequence"] = "Sequence"
-L["asc"] = "asc"
-L["desc"] = "desc"
-
-L["Click"] = "Click"
-L["Shift + Right-Click"] = "Shift + Right-Click"
-L["Ctrl + Right-Click"] = "Ctrl + Right-Click"
-L["Shift + Left-Click"] = "Shift + Left-Click"
-L["Ctrl + Left-Click"] = "Ctrl + Left-Click"

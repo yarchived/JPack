@@ -30,14 +30,3 @@ L["Set sequence to desc"] = "내림차순으로 설정"
 L["Save to the bank"] = "은행에 넣기"
 L["Load from the bank"] = "은행에서 꺼내기"
 L["Print help info"] = "도움말 정보 출력"
-
--- LDB support
-L["Sequence"] = "순서"
-L["asc"] = "오름차순"
-L["desc"] = "내림차순"
-
-L["Click"] = "클릭"
-L["Shift + Right-Click"] = "SHIFT + 오른쪽-클릭"
-L["Ctrl + Right-Click"] = "CTRL + 오른쪽-클릭"
-L["Shift + Left-Click"] = "SHIFT + 왼쪽-클릭"
-L["Ctrl + Left-Click"] = "CTRL + 왼쪽-클릭"
