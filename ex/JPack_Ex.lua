@@ -28,12 +28,43 @@ end
 JPack_Ex:SetScript("OnEvent", JPack_Ex.OnEvent)
 JPack_Ex:RegisterEvent("PLAYER_ENTERING_WORLD")
 
-function JPack_Ex:Work(button)
-	if button == "LeftButton" then
-		JPack_Pack(nil, 1)
-	elseif button == "RightButton" then
-		JPack_Pack(nil, 2)
+local function JPack_Ex_CmdToParam(cmd)
+	if(cmd == "desc")then
+		return 2
+	elseif(cmd == "asc")then
+		return 1
+	elseif(cmd == "save" or cmd == "deposit")then
+		return 4
+	elseif(cmd == "load" or cmd == "draw")then
+		return 8
+	else
+		return 0
 	end
+end
+
+JPACK_LEFT_CLICK  = JPack_Ex_CmdToParam(JPACK_LEFT_CLICK)
+JPACK_RIGHT_CLICK = JPack_Ex_CmdToParam(JPACK_RIGHT_CLICK)
+JPACK_ALT_DOWN    = JPack_Ex_CmdToParam(JPACK_ALT_DOWN)
+JPACK_SHIFT_DOWN  = JPack_Ex_CmdToParam(JPACK_SHIFT_DOWN)
+JPACK_CTRL_DOWN   = JPack_Ex_CmdToParam(JPACK_CTRL_DOWN)
+
+function JPack_Ex:Work(button)
+	local param = 0
+	if button == "LeftButton" then
+		param = bit.bor(param , JPACK_LEFT_CLICK)
+	elseif button == "RightButton" then
+		param = bit.bor(param , JPACK_RIGHT_CLICK)
+	end
+	if IsAltKeyDown() then
+		param = bit.bor(param , JPACK_ALT_DOWN)
+	elseif IsControlKeyDown() then
+		param = bit.bor(param , JPACK_CTRL_DOWN)
+	elseif IsShiftKeyDown() then
+		param = bit.bor(param , JPACK_SHIFT_DOWN)	
+	end
+	
+	JPack:Pack(bit.rshift(param,2), bit.band(param, 3))
+		
 	if ( IsAddOnLoaded("EngBags") ) then
 		EngInventory_UpdateWindow();
 		EngInventory_frame:Hide();
@@ -53,7 +84,7 @@ end
 --------------------------------
 
 function SetJPack_ExButton()
-	JPackMMIconDB.hide = true
+	--JPackMMIconDB.hide = true
 		
 	if ( IsAddOnLoaded("Combuctor") ) then
 	  CombuctorFrame1Search:SetPoint("TOPRIGHT",-166,-44);

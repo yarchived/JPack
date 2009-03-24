@@ -3,5 +3,7 @@
 	<Include file="localization\locales.xml" />
 	<Script file="JPackConfig.lua" />
 	<Script file="JPack.lua" />
+	<Script file="ex\localization.lua" />
+	<Script file="ex\JPack_Ex.lua" />
 	<Include file="plugins\load.xml" />
 </Ui>
