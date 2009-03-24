@@ -7,7 +7,7 @@
 ## SavedVariables: JPackDB
 ## OptionalDeps: tekDebug
 
-## Author: Jason Green, yleaf
+## Author: Jason Green, yleaf, 阳一
 ## Email: guileen@gmail.com
 ## X-Website: http://wow-jpack.googlecode.com/
 
