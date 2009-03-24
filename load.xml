@@ -5,5 +5,5 @@
 	<Script file="JPack.lua" />
 	<Script file="ex\localization.lua" />
 	<Script file="ex\JPack_Ex.lua" />
-	<Include file="plugins\load.xml" />
+	<Script file="broker\core.lua" />
 </Ui>

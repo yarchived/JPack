@@ -1,3 +1,6 @@
+if not LibStub then return end
+if not LibStub:GetLibrary('LibDataBroker-1.1', true) then return end
+
 local loc, L = GetLocale(), {
 	['Sequence'] = 'Sequence',
 	['asc'] = 'asc',
