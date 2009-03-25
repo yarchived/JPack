@@ -1,9 +1,8 @@
 ## Interface: 30000
 
-## Title: |cff32cd32J|rPack
+## Title: JrPack
 ## Notes: Quick (re)sort out your items in your bags/bank/guildbank!
 ## Notes-zhCN: 背包整理
-## Version: 0.6 alpha
 ## SavedVariables: JPackDB
 ## OptionalDeps: tekDebug
 
@@ -11,4 +10,13 @@
 ## Email: guileen@gmail.com
 ## X-Website: http://wow-jpack.googlecode.com/
 
-load.xml
+localization\locales.xml
+JPack.lua
+
+JPackConfig.lua
+
+#@debug@
+ex\localization.lua
+ex\JPack_Ex.lua
+broker\core.lua
+#@end-debug@

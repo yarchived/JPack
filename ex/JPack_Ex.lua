@@ -1,10 +1,7 @@
--- <= == == == == == == == == == == == == =>
--- =>   JPack_Ex.lua
--- =>	  v 0.5
--- =>   JPack_Ex for Inventory&JPack
--- =>   阳一( zyleon ) 
--- =>	  zyleon@sohu.com
--- <= == == == == == == == == == == == == =>
+--[[
+	JPack_Ex for Inventory&JPack
+	zyleon@sohu.com
+]]
 
 JPack_Ex = CreateFrame("Frame", "JPack_Ex")
 local L = JPack_Ex_Locale
