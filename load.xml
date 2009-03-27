@@ -5,5 +5,8 @@
 	<Script file="JPack.lua" />
 	<Script file="ex\localization.lua" />
 	<Script file="ex\JPack_Ex.lua" />
+	<Script file="ex\Bagnon_Ex.lua" />
+	<Script file="ex\Bagnon.lua" />
+	<Script file="ex\Bagnon_Forever.lua" />
 	<Script file="broker\core.lua" />
 </Ui>
