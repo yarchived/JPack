@@ -7,8 +7,7 @@
 ## OptionalDeps: tekDebug
 
 ## Author: Jason Green, yleaf, 阳一
-## Email: guileen@gmail.com
-## X-Website: http://wow-jpack.googlecode.com/
+## X-Website: http://wow.curse.com/downloads/wow-addons/details/jpack.aspx
 
 localization\locales.xml
 JPack.lua

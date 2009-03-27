@@ -1,4 +1,4 @@
--- debug msg, you need to install tekDebug 1st
+-- debugging, get tekDebug first
 local debugf = tekDebug and tekDebug:GetFrame("JPack")
 local debug
 if debugf then
@@ -20,7 +20,7 @@ JPack.bagGroups={}
 JPack.packingGroupIndex=1
 JPack.packingBags={}
 
-local version = "0.6 alpha"
+local version = "0.61"
 local L = JPackLocale
 
 --local interval=0.1
