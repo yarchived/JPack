@@ -1,8 +1,11 @@
 ## Interface: 30000
 ## Title: JPack Ex
-## Title-zhCN: 背包整理-按键
+## Title-zhCN: JPack背包整理-按键
 ## Notes-zhCN: 为各种背包整合及系统背包添加JPack整理按键。
 ## Dependencies: JPack
 
 localization.lua
 JPack_Ex.lua
+Bagnon_Ex.lua
+Bagnon.lua
+Bagnon_Forever.lua
