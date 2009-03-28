@@ -20,7 +20,7 @@ JPack.bagGroups={}
 JPack.packingGroupIndex=1
 JPack.packingBags={}
 
-local version = "0.61"
+local version = "0.62"
 local L = JPackLocale
 
 --local interval=0.1

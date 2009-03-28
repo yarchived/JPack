@@ -1,8 +1,9 @@
 ## Interface: 30000
 
-## Title: JrPack
+## Title: JPack
+## Title-zhCN: JPack背包整理
 ## Notes: Quick (re)sort out your items in your bags/bank/guildbank!
-## Notes-zhCN: 背包整理
+## Notes-zhCN: JPack背包整理
 ## SavedVariables: JPackDB
 ## OptionalDeps: tekDebug
 
