@@ -1,5 +1,6 @@
 ## Interface: 30000
 ## Title: JPack Broker
+## Title-zhCN: JPack背包整理-Broker
 ## Notes: Broker for jpack!
 ## Dependencies: JPack
 
