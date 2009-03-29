@@ -5,7 +5,9 @@
 ## Notes: Quick (re)sort out your items in your bags/bank/guildbank!
 ## Notes-zhCN: JPack背包整理
 ## SavedVariables: JPackDB
+#@debug@
 ## OptionalDeps: tekDebug
+#@end-debug@
 
 ## Author: Jason Green, yleaf, 阳一
 ## X-Website: http://wow.curse.com/downloads/wow-addons/details/jpack.aspx
