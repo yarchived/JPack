@@ -1,11 +1,16 @@
--- debugging, get tekDebug first
-local debugf = tekDebug and tekDebug:GetFrame("JPack")
-local debug
+-- dev modify
+
+local NOGUILDBANK = true
+local debug = function() end
+
+--@debug@
+local debugf = tekDebug and tekDebug:GetFrame("JPack")--tekDebug
 if debugf then
 	debug = function(...) debugf:AddMessage(string.join(", ", ...)) end
-else
-	debug = function() end
 end
+NOGUILDBANK = false
+--@end-debug@
+
 
 --[[===================================
 			Local
@@ -732,7 +737,7 @@ function JPack.OnUpdate(self, el)
 	if(JPACK_STEP==JPACK_STARTED)then
 		debug('JPACK_STEP==JPACK_STARTED')
 		-- 判断玩家是否打开公会银行并有相应权限 *** 需要纠正判断
-		if JPack.guildbankOpened then
+		if NOGUILDBANK and JPack.guildbankOpened then
 			debug('guildbankOpened')
 			-- 会长直接有全部权限
 			if IsGuildLeader(UnitName("player")) then
