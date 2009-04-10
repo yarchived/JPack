@@ -6,6 +6,3 @@
 
 localization.lua
 JPack_Ex.lua
-Bagnon_Ex.lua
-Bagnon.lua
-Bagnon_Forever.lua

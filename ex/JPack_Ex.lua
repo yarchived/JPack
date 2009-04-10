@@ -3,16 +3,16 @@
 	zyleon@sohu.com
 ]]
 
-JPack_Ex = CreateFrame("Frame", "JPack_Ex")
+JPack_Ex = CreateFrame("Frame")
 local L = JPack_Ex_Locale
 
-function JPack_Ex:OnEvent()
-	if ( event == "PLAYER_ENTERING_WORLD" ) then
-		self:OnLoad()
-	end
+function JPack_Ex:PLAYER_LOGIN()
+	JPack_Ex:BuildButtons()
+	JPack_Ex:UnregisterEvent("PLAYER_LOGIN")
+	JPack_Ex.PLAYER_LOGIN = nil
 end
 
-function JPack_Ex:OnLoad()
+--[[function JPack_Ex:OnLoad()
 	JPack_Ex:RegisterEvent("BANKFRAME_OPENED")
 	JPack_Ex:RegisterEvent("BANKFRAME_CLOSED")
 	if not IsAddOnLoaded("JPack") then 
@@ -20,10 +20,16 @@ function JPack_Ex:OnLoad()
 	else
 		SetJPack_ExButton()
 	end	
-end
+end]]
 
-JPack_Ex:SetScript("OnEvent", JPack_Ex.OnEvent)
-JPack_Ex:RegisterEvent("PLAYER_ENTERING_WORLD")
+JPack_Ex:SetScript("OnEvent", function(self, event, ...)
+	if self[event]
+		then self[event](self, event, ...)
+	else
+		self:UnregisterEvent(event)
+	end
+end)
+JPack_Ex:RegisterEvent("PLAYER_LOGIN")
 
 local function JPack_Ex_CmdToParam(cmd)
 	if(cmd == "desc")then
@@ -61,378 +67,83 @@ function JPack_Ex:Work(button)
 	end
 	
 	JPack:Pack(bit.rshift(param,2), bit.band(param, 3))
-		
-	if ( IsAddOnLoaded("EngBags") ) then
-		EngInventory_UpdateWindow();
-		EngInventory_frame:Hide();
-		EngBank_UpdateWindow();
-		EngBank_frame:Hide();
-	elseif ( IsAddOnLoaded("ArkInventory") ) then
-		ARKINV_Frame1:Hide();
-		ARKINV_Frame3:Hide();
-	else
-	  return
-	end
 end
 
-
 --------------------------------
--- Hook Button to Frame
+-- 
 --------------------------------
-
-function SetJPack_ExButton()
-	--JPackMMIconDB.hide = true
-		
-	if ( IsAddOnLoaded("Combuctor") ) then
-	  CombuctorFrame1Search:SetPoint("TOPRIGHT",-166,-44);
-	  CombuctorFrame2Search:SetPoint("TOPRIGHT",-166,-44);
-	  
-		local f = CreateFrame("Button", "JPack_ExButton", CombuctorFrame1, "UIPanelButtonTemplate");		
-		
-		f:SetWidth(45)
-		f:SetHeight(25)
-		f:SetPoint("TOPRIGHT", -50, -40)
-		f:SetText(L.BUTTON_TEXT)
-		f:RegisterForClicks('anyUp')
-		f:SetScript("OnEnter", function(f)
-				GameTooltip:SetOwner(f, "ANCHOR_RIGHT");
-				GameTooltip:SetText(L.BUTTON_TOOLTIP)
-				GameTooltip:Show();
-			end
-		);
-		f:SetScript("OnLeave", function()
-				GameTooltip:Hide();
-			end
-		);
-		f:SetScript("OnClick", JPack_Ex.Work)
-		
-		local bf = CreateFrame("Button", "JPack_ExButton", CombuctorFrame2, "UIPanelButtonTemplate");
-		bf:SetWidth(45)
-		bf:SetHeight(25)
-		bf:SetPoint("TOPRIGHT", -50, -40)
-		bf:SetText(L.BUTTON_TEXT)
-		bf:RegisterForClicks('anyUp')
-		bf:SetScript("OnEnter", function(bf)
-				GameTooltip:SetOwner(bf, "ANCHOR_RIGHT");
-				GameTooltip:SetText(L.BUTTON_TOOLTIP)
-				GameTooltip:Show();
-			end
-		);
-		bf:SetScript("OnLeave", function()
-				GameTooltip:Hide();
-			end
-		);
-		bf:SetScript("OnClick", JPack_Ex.Work)
-		
-	elseif ( IsAddOnLoaded("MyInventory") ) then
+function JPack_Ex:Build(parent, width, height, point1, point2, point3)
+	local f = CreateFrame("Button", "JPack_ExButton", parent, "UIPanelButtonTemplate");		
 	
-		local f = CreateFrame("Button", "JPack_ExButton", MyInventoryFrame, "UIPanelButtonTemplate");
-		f:SetWidth(45)
-		f:SetHeight(25)
-		f:SetPoint("TOPRIGHT", -15, -35)
-		f:SetText(L.BUTTON_TEXT)
-		f:RegisterForClicks('anyUp')
-		f:SetScript("OnEnter", function(f)
-				GameTooltip:SetOwner(f, "ANCHOR_RIGHT");
-				GameTooltip:SetText(L.BUTTON_TOOLTIP)
-				GameTooltip:Show();
-			end
-		);
-		f:SetScript("OnLeave", function()
-				GameTooltip:Hide();
-			end
-		);
-		f:SetScript("OnClick", JPack_Ex.Work)
-		
-		local bf = CreateFrame("Button", "JPack_ExButton", MyBankFrame, "UIPanelButtonTemplate");
-		bf:SetWidth(45)
-		bf:SetHeight(25)
-		bf:SetPoint("TOPRIGHT", -15, -35)
-		bf:SetText(L.BUTTON_TEXT)
-		bf:RegisterForClicks('anyUp')
-		bf:SetScript("OnEnter", function(bf)
-				GameTooltip:SetOwner(bf, "ANCHOR_RIGHT");
-				GameTooltip:SetText(L.BUTTON_TOOLTIP)
-				GameTooltip:Show();
-			end
-		);
-		bf:SetScript("OnLeave", function()
-				GameTooltip:Hide();
-			end
-		);
-		bf:SetScript("OnClick", JPack_Ex.Work)
-		
-	elseif ( IsAddOnLoaded("BaudBag") ) then
-	
-		local f = CreateFrame("Button", "JPack_ExButton", BBCont1_1, "UIPanelButtonTemplate");
-		f:SetWidth(45)
-		f:SetHeight(20)
-		f:SetPoint("TOPRIGHT", -40, 20)
-		f:SetText(L.BUTTON_TEXT)
-		f:RegisterForClicks('anyUp')
-		f:SetScript("OnEnter", function(f)
-				GameTooltip:SetOwner(f, "ANCHOR_RIGHT");
-				GameTooltip:SetText(L.BUTTON_TOOLTIP)
-				GameTooltip:Show();
-			end
-		);
-		f:SetScript("OnLeave", function()
-				GameTooltip:Hide();
-			end
-		);
-		f:SetScript("OnClick", JPack_Ex.Work)
-		
-		local bf = CreateFrame("Button", "JPack_ExButton", BBCont2_1, "UIPanelButtonTemplate");
-		bf:SetWidth(45)
-		bf:SetHeight(20)
-		bf:SetPoint("TOPRIGHT", -40, 20)
-		bf:SetText(L.BUTTON_TEXT)
-		bf:RegisterForClicks('anyUp')
-		bf:SetScript("OnEnter", function(bf)
-				GameTooltip:SetOwner(bf, "ANCHOR_RIGHT");
-				GameTooltip:SetText(L.BUTTON_TOOLTIP)
-				GameTooltip:Show();
-			end
-		);
-		bf:SetScript("OnLeave", function()
-				GameTooltip:Hide();
-			end
-		);
-		bf:SetScript("OnClick", JPack_Ex.Work)
-		
-	elseif ( IsAddOnLoaded("OneBag") or IsAddOnLoaded("OneBag3")) then
-	
-		local f = CreateFrame("Button", "JPack_ExButton", OneBagFrame, "UIPanelButtonTemplate");
-		f:SetWidth(60)
-		f:SetHeight(20)
-		f:SetPoint("TOPRIGHT", -105, -6)
-		f:SetText(L.BUTTON_TEXT)
-		f:RegisterForClicks('anyUp')
-		f:SetScript("OnEnter", function(f)
-				GameTooltip:SetOwner(f, "ANCHOR_RIGHT");
-				GameTooltip:SetText(L.BUTTON_TOOLTIP)
-				GameTooltip:Show();
-			end
-		);
-		f:SetScript("OnLeave", function()
-				GameTooltip:Hide();
-			end
-		);
-		f:SetScript("OnClick", JPack_Ex.Work)
-		
-	  if ( IsAddOnLoaded("OneBank") or IsAddOnLoaded("OneBank3")) then
-		
-			local bf = CreateFrame("Button", "JPack_ExButton", OneBankFrame, "UIPanelButtonTemplate");
-			bf:SetWidth(60)
-			bf:SetHeight(20)
-			bf:SetPoint("TOPRIGHT", -105, -6)
-			bf:SetText(L.BUTTON_TEXT)
-			bf:RegisterForClicks('anyUp')
-			bf:SetScript("OnEnter", function(bf)
-					GameTooltip:SetOwner(bf, "ANCHOR_RIGHT");
-					GameTooltip:SetText(L.BUTTON_TOOLTIP)
-					GameTooltip:Show();
-				end
-			);
-			bf:SetScript("OnLeave", function()
-					GameTooltip:Hide();
-				end
-			);
-			bf:SetScript("OnClick", JPack_Ex.Work)
+	f:SetWidth(width)
+	f:SetHeight(height)
+	f:SetPoint(point1, point2, point3)
+	f:SetText(L.BUTTON_TEXT)
+	f:RegisterForClicks('anyUp')
+	f:SetScript("OnEnter", function(f)
+			GameTooltip:SetOwner(f, "ANCHOR_RIGHT");
+			GameTooltip:SetText(L.BUTTON_TOOLTIP)
+			GameTooltip:Show();
 		end
-	
-	elseif ( IsAddOnLoaded("cargBags") ) then
-	
-		local f = CreateFrame("Button", "JPack_ExButton", cb_main, "UIPanelButtonTemplate");
-		f:SetWidth(45)
-		f:SetHeight(20)
-		f:SetPoint("TOPRIGHT", -5, 20)
-		f:SetText(L.BUTTON_TEXT)
-		f:RegisterForClicks('anyUp')
-		f:SetScript("OnEnter", function(f)
-				GameTooltip:SetOwner(f, "ANCHOR_RIGHT");
-				GameTooltip:SetText(L.BUTTON_TOOLTIP)
-				GameTooltip:Show();
-			end
-		);
-		f:SetScript("OnLeave", function()
-				GameTooltip:Hide();
-			end
-		);
-		f:SetScript("OnClick", JPack_Ex.Work)
-		
-		local bf = CreateFrame("Button", "JPack_ExButton", cb_bank, "UIPanelButtonTemplate");
-		bf:SetWidth(45)
-		bf:SetHeight(20)
-		bf:SetPoint("TOPRIGHT", -5, 20)
-		bf:SetText(L.BUTTON_TEXT)
-		bf:RegisterForClicks('anyUp')
-		bf:SetScript("OnEnter", function(bf)
-				GameTooltip:SetOwner(bf, "ANCHOR_RIGHT");
-				GameTooltip:SetText(L.BUTTON_TOOLTIP)
-				GameTooltip:Show();
-			end
-		);
-		bf:SetScript("OnLeave", function()
-				GameTooltip:Hide();
-			end
-		);
-		bf:SetScript("OnClick", JPack_Ex.Work)
-		
-	elseif ( IsAddOnLoaded("Baggins") ) then
-	
-		local f = CreateFrame("Button", "JPack_ExButton", BagginsBag1, "UIPanelButtonTemplate");
-		f:SetWidth(45)
-		f:SetHeight(20)
-		f:SetPoint("TOPRIGHT", -30, -6)
-		f:SetText(L.BUTTON_TEXT)
-		f:RegisterForClicks('anyUp')
-		f:SetScript("OnEnter", function(f)
-				GameTooltip:SetOwner(f, "ANCHOR_RIGHT");
-				GameTooltip:SetText(L.BUTTON_TOOLTIP)
-				GameTooltip:Show();
-			end
-		);
-		f:SetScript("OnLeave", function()
-				GameTooltip:Hide();
-			end
-		);
-		f:SetScript("OnClick", JPack_Ex.Work)
-		
-		local bf = CreateFrame("Button", "JPack_ExButton", BagginsBag12, "UIPanelButtonTemplate");
-		bf:SetWidth(45)
-		bf:SetHeight(20)
-		bf:SetPoint("TOPRIGHT", -30, -6)
-		bf:SetText(L.BUTTON_TEXT)
-		bf:RegisterForClicks('anyUp')
-		bf:SetScript("OnEnter", function(bf)
-				GameTooltip:SetOwner(bf, "ANCHOR_RIGHT");
-				GameTooltip:SetText(L.BUTTON_TOOLTIP)
-				GameTooltip:Show();
-			end
-		);
-		bf:SetScript("OnLeave", function()
-				GameTooltip:Hide();
-			end
-		);
-		bf:SetScript("OnClick", JPack_Ex.Work)
-	
-	elseif ( IsAddOnLoaded("ArkInventory") ) then
-	
-		local f = CreateFrame("Button", "JPack_ExButton", ARKINV_Frame1, "UIPanelButtonTemplate");
-		f:SetWidth(45)
-		f:SetHeight(20)
-		f:SetPoint("TOPRIGHT", -5, 20)
-		f:SetText(L.BUTTON_TEXT)
-		f:RegisterForClicks('anyUp')
-		f:SetScript("OnEnter", function(f)
-				GameTooltip:SetOwner(f, "ANCHOR_RIGHT");
-				GameTooltip:SetText(L.BUTTON_TOOLTIP)
-				GameTooltip:Show();
-			end
-		);
-		f:SetScript("OnLeave", function()
-				GameTooltip:Hide();
-			end
-		);
-		f:SetScript("OnClick", JPack_Ex.Work)
-		
-		local bf = CreateFrame("Button", "JPack_ExButton", ARKINV_Frame3, "UIPanelButtonTemplate");
-		bf:SetWidth(45)
-		bf:SetHeight(20)
-		bf:SetPoint("TOPRIGHT", -35, -40)
-		bf:SetText(L.BUTTON_TEXT)
-		bf:RegisterForClicks('anyUp')
-		bf:SetScript("OnEnter", function(bf)
-				GameTooltip:SetOwner(bf, "ANCHOR_RIGHT");
-				GameTooltip:SetText(L.BUTTON_TOOLTIP)
-				GameTooltip:Show();
-			end
-		);
-		bf:SetScript("OnLeave", function()
-				GameTooltip:Hide();
-			end
-		);
-		bf:SetScript("OnClick", JPack_Ex.Work)
-		
-	elseif ( IsAddOnLoaded("EngBags") ) then
-	
-		local f = CreateFrame("Button", "JPack_ExButton", EngInventory_frame, "UIPanelButtonTemplate");
-		f:SetWidth(45)
-		f:SetHeight(20)
-		f:SetPoint("TOPRIGHT", -10, 20)
-		f:SetText(L.BUTTON_TEXT)
-		f:RegisterForClicks('anyUp')
-		f:SetScript("OnEnter", function(f)
-				GameTooltip:SetOwner(f, "ANCHOR_RIGHT");
-				GameTooltip:SetText(L.BUTTON_TOOLTIP)
-				GameTooltip:Show();
-			end
-		);
-		f:SetScript("OnLeave", function()
-				GameTooltip:Hide();
-			end
-		);
-		f:SetScript("OnClick", JPack_Ex.Work)
-		
-		local bf = CreateFrame("Button", "JPack_ExButton", EngBank_frame, "UIPanelButtonTemplate");
-		bf:SetWidth(45)
-		bf:SetHeight(20)
-		bf:SetPoint("TOPRIGHT", -10, 20)
-		bf:SetText(L.BUTTON_TEXT)
-		bf:RegisterForClicks('anyUp')
-		bf:SetScript("OnEnter", function(bf)
-				GameTooltip:SetOwner(bf, "ANCHOR_RIGHT");
-				GameTooltip:SetText(L.BUTTON_TOOLTIP)
-				GameTooltip:Show();
-			end
-		);
-		bf:SetScript("OnLeave", function()
-				GameTooltip:Hide();
-			end
-		);
-		bf:SetScript("OnClick", JPack_Ex.Work)
+	);
+	f:SetScript("OnLeave", function()
+		GameTooltip:Hide();
+	end);
+	f:SetScript("OnClick", JPack_Ex.Work)
 
-	else
-	
-		local f = CreateFrame("Button", "JPack_ExButton", ContainerFrame1, "UIPanelButtonTemplate");
-		f:SetWidth(45)
-		f:SetHeight(20)
-		f:SetPoint("TOPRIGHT", -10, -28)
-		f:SetText(L.BUTTON_TEXT)
-		f:RegisterForClicks('anyUp')
-		f:SetScript("OnEnter", function(f)
-				GameTooltip:SetOwner(f, "ANCHOR_RIGHT");
-				GameTooltip:SetText(L.BUTTON_TOOLTIP)
-				GameTooltip:Show();
-			end
-		);
-		f:SetScript("OnLeave", function()
-				GameTooltip:Hide();
-			end
-		);
-		f:SetScript("OnClick", JPack_Ex.Work)
+	return f
+end
+
+--------------------------------
+-- Build Buttons
+--------------------------------
+
+function JPack_Ex:BuildButtons()
+	if IsAddOnLoaded("Combuctor") then
+		CombuctorFrame1Search:SetPoint("TOPRIGHT",-166,-44)
+		CombuctorFrame2Search:SetPoint("TOPRIGHT",-166,-44)
 		
-		local bf = CreateFrame("Button", "JPack_ExButton", BankFrame, "UIPanelButtonTemplate");
-		bf:SetWidth(45)
-		bf:SetHeight(20)
-		bf:SetPoint("TOPRIGHT", -35, -40)
-		bf:SetText(L.BUTTON_TEXT)
-		bf:RegisterForClicks('anyUp')
-		bf:SetScript("OnEnter", function(bf)
-				GameTooltip:SetOwner(bf, "ANCHOR_RIGHT");
-				GameTooltip:SetText(L.BUTTON_TOOLTIP)
-				GameTooltip:Show();
+		JPack_Ex:Build(CombuctorFrame1, 45, 25, "TOPRIGHT", -50, -40)
+		JPack_Ex:Build(CombuctorFrame2, 45, 20, "TOPRIGHT", -50, -40)
+		
+	elseif IsAddOnLoaded("MyInventory") then
+		JPack_Ex:Build(MyInventoryFrame, 45, 20, "TOPRIGHT", -15, -35)
+		JPack_Ex:Build(MyBankFrame, 45, 20, "TOPRIGHT", -15, -35)
+		
+	elseif IsAddOnLoaded("BaudBag") then
+		JPack_Ex:Build(BBCont1_1, 45, 20, "TOPRIGHT", -40, 20)
+		JPack_Ex:Build(BBCont2_1, 45, 20, "TOPRIGHT", -40, 20)
+		
+	elseif IsAddOnLoaded("OneBag") or IsAddOnLoaded("OneBag3") then
+		JPack_Ex:Build(OneBagFrame, 60, 20, "TOPRIGHT", -105, -6)
+		
+		if IsAddOnLoaded("OneBank") or IsAddOnLoaded("OneBank3") then
+			JPack_Ex:Build(OneBankFrame, 60, 20, "TOPRIGHT", -105, -6)
+		end
+	elseif IsAddOnLoaded("cargBags") then
+		JPack_Ex:Build(cb_main, 45, 20, "TOPRIGHT", -5, 20)
+		JPack_Ex:Build(cb_bank, 45, 20, "TOPRIGHT", -5, 20)
+		
+	elseif IsAddOnLoaded("Baggins") then
+		JPack_Ex:Build(BagginsBag1, 45, 20, "TOPRIGHT", -30, -6)
+		JPack_Ex:Build(BagginsBag12, 45, 20, "TOPRIGHT", -30, -6)
+		
+	elseif IsAddOnLoaded("Bagnon") then
+		local id = 0
+		hooksecurefunc(BagnonFrame, "Create", function()
+			local framename = format('BagnonFrame%d', id)
+			id = id + 1
+			local f = getglobal(framename)
+			if f then
+				local b = JPack_Ex:Build(f, 45, 20, "TOPRIGHT", -30, -7)
+				b:SetFrameStrata("FULLSCREEN")
 			end
-		);
-		bf:SetScript("OnLeave", function()
-				GameTooltip:Hide();
-			end
-		);
-		bf:SetScript("OnClick", JPack_Ex.Work)
-				
+		end)
+		
+	else -- blizzy bag
+		JPack_Ex:Build(ContainerFrame1, 45, 20, "TOPRIGHT", -10, -28)
+		JPack_Ex:Build(BankFrame, 45, 20, "TOPRIGHT", -35, -40)
 	end
-	
 end
 
 
