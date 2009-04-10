@@ -25,7 +25,7 @@ JPack.bagGroups={}
 JPack.packingGroupIndex=1
 JPack.packingBags={}
 
-local version = "0.62"
+local version = GetAddOnMetadata("JPack", "Version")
 local L = JPackLocale
 
 --local interval=0.1

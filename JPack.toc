@@ -1,9 +1,10 @@
 ## Interface: 30000
 
 ## Title: JPack
-## Title-zhCN: JPack背包整理
 ## Notes: Quick (re)sort out your items in your bags/bank/guildbank!
+## Title-zhCN: JPack背包整理
 ## Notes-zhCN: JPack背包整理
+## Version: 0.6.3
 ## SavedVariables: JPackDB
 #@debug@
 ## OptionalDeps: tekDebug
