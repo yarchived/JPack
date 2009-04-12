@@ -9,6 +9,9 @@ if ( GetLocale() == "zhCN") then
 elseif ( GetLocale() == "zhTW") then
 	L.BUTTON_TEXT = "整理"
 	L.BUTTON_TOOLTIP = "|cFF00FF00左鍵點擊|r正序整理\n\n|cFF00FF00右鍵點擊|r逆序整理"
+elseif ( GetLocale() == "deDE") then
+	L.BUTTON_TEXT = "Packen"
+	L.BUTTON_TOOLTIP = "|cFF00FF00Linksklick:|r Aufsteigend packen\n\n|cFF00FF00Rechtsklick:|r Absteigend packen"
 end
 
 

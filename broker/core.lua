@@ -75,6 +75,24 @@ elseif loc == 'koKR' then
 	L['Set sequence to desc'] = '내림차순으로 설정'
 	
 	L['HELP'] = '도움말을 보려면 "/jpack help"를 입력하세요.'
+elseif loc == 'deDE' then
+	L['Sequence'] = 'Reihenfolge'
+	L['asc'] = 'Aufsteigend'
+	L['desc'] = 'Absteigend'
+	
+	L['Click'] = 'Linksklick'
+	L['Pack'] = 'Packen'
+
+	L['Shift + Right-Click'] = 'SHIFT + Rechtsklick'
+	L['Save to the bank'] = 'Sichere zur Bank'
+	L['Ctrl + Right-Click'] = 'CTRL + Rechtsklick'
+	L['Load from the bank'] = 'Lade von der Bank'
+	L['Shift + Left-Click'] = 'SHIFT + Linksklick'
+	L['Set sequence to asc'] = 'Setze aufsteigende Reihenfolge'
+	L['Ctrl + Left-Click'] = 'CTRL + Linksklick'
+	L['Set sequence to desc'] = 'Setze absteigende Reihenfolge'
+	
+	L['HELP'] = 'Tippe "/jpack help" für Hilfe'
 end
 
 local dataobj = LibStub:GetLibrary('LibDataBroker-1.1'):NewDataObject('JPack', {

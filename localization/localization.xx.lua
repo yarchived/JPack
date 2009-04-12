@@ -3,6 +3,6 @@
 	Translated by: name <email address>
 ]=]
 
-if JPackLocale.locale ~= "xxXX" then return end
+if GetLocale() ~= "xxXX" then return end
 local L = JPackLocale
 

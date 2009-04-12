@@ -3,7 +3,7 @@
 	Translated by: name <email address>
 ]=]
 
-if JPackLocale.locale ~= "zhCN" then return end
+if GetLocale() ~= "zhCN" then return end
 local L = JPackLocale
 
 L.TYPE_BAG="容器"
