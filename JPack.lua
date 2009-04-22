@@ -155,7 +155,7 @@ local function getPerffix(item)
 	--灰色物品、可装备的非优秀物品
 	if(item.rarity==0)then
 		return "00"..s
-	elseif(IsEquippableItem(item.name) and item.type~=JPackLocale.TYPE_BAG and item.subType~=JPackLocale.TYPE_FISHWEAPON) then 
+	elseif(IsEquippableItem(item.name) and item.type~=JPackLocale.TYPE_BAG and item.subType~=JPackLocale.TYPE_FISHWEAPON) and item.subType~=JPackLocale.TYPE_OTHERS then 
 		if(item.rarity <= 1 ) then
 			return '01'..s
 		end
