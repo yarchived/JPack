@@ -96,6 +96,7 @@ end
 --是否能放入某背包
 local function CanGoInBag(frombag,fromslot, tobag)
    local item = GetContainerItemLink(frombag,fromslot)
+   if(item==nil)then  return false end
    -- Get the item's family
    local itemFamily = GetItemFamily(item)
    
