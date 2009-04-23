@@ -356,7 +356,14 @@ local function moveToSpecialBag(flag)
 		local frombag,tobag = fromBags[frombagIndex],toBags[tobagIndex]
 		local fromslot,toslot=GetContainerNumSlots(frombag),GetContainerNumSlots(tobag)
 		--移动
+		local c = 0
 		while(true) do
+			c = c + 1
+			if(c>300)then 
+				debug("force quit, count to 300")
+				break 
+			end
+			
 			while(tobagIndex>0 and GetContainerItemLink(tobag,toslot))do
 				--直到找到一个空格
 				tobagIndex,toslot=getPrevSlot(toBags,tobagIndex,toslot)
@@ -364,7 +371,7 @@ local function moveToSpecialBag(flag)
 			end
 			
 			while(frombagIndex>0 and (not CanGoInBag(frombag,fromslot,tobag)))do
-				frombagIndex,fromslot=getPrevSlot(fromBags,frombagIndex,toslot)
+				frombagIndex,fromslot=getPrevSlot(fromBags,frombagIndex,fromslot)
 				frombag = fromBags[frombagIndex]
 			end
 			
