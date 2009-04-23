@@ -2,13 +2,6 @@
 	Modify order here
 ]=]
 
-
 --JPACK_ORDER={}
 --JPACK_DEPOSIT={}
 --JPACK_DRAW={}
-
-JPACK_LEFT_CLICK="desc"
-JPACK_RIGHT_CLICK="asc"
-JPACK_ALT_DOWN="load"
-JPACK_CTRL_DOWN="save"
-JPACK_SHIFT_DOWN=""

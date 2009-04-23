@@ -3,8 +3,73 @@
 	zyleon@sohu.com
 ]]
 
+local loc, L = GetLocale(), {
+	["Click"] = "Click",
+	["Pack"] = "Pack",
+	
+	["Shift + Left-Click"] = "Shift + Right-Click",
+	["Save to the bank"] = "Save to the bank",
+	["Ctrl + Left-Click"] = "Ctrl + Right-Click",
+	["Load from the bank"] = "Load from the bank",
+	["Shift + Right-Click"] = "Shift + Left-Click",
+	["Set sequence to asc"] = "Set sequence to asc",
+	["Ctrl + Right-Click"] = "Ctrl + Left-Click",
+	["Set sequence to desc"] = "Set sequence to desc",
+}
+
+if loc == "zhCN" then
+	L["Click"] = "点击"
+	L["Pack"] = "整理"
+	
+	L["Shift + Left-Click"] = "Shift + 左键"
+	L["Save to the bank"] = "保存到银行"
+	L["Ctrl + Left-Click"] = "Ctrl + 左键"
+	L["Load from the bank"] = "从银行取出"
+	L["Shift + Right-Click"] = "Shift + 右键"
+	L["Set sequence to asc"] = "正序整理"
+	L["Ctrl + Right-Click"] = "Ctrl + 右键"
+	L["Set sequence to desc"] = "逆序整理"
+elseif loc == "zhTW" then
+	L["Click"] = "點擊"
+	L["Pack"] = "整理"
+	
+	L["Shift + Left-Click"] = "Shift + 左鍵"
+	L["Save to the bank"] = "保存到銀行"
+	L["Ctrl + Left-Click"] = "Ctrl + 左鍵"
+	L["Load from the bank"] = "從銀行取出"
+	L["Shift + Right-Click"] = "Shift + 右鍵"
+	L["Set sequence to asc"] = "正序整理"
+	L["Ctrl + Right-Click"] = "Ctrl + 右鍵"
+	L["Set sequence to desc"] = "逆序整理"
+elseif loc == "koKR" then
+	L["Click"] = "??"
+	L["Pack"] = "??"
+
+	L['Shift + Right-Click'] = 'SHIFT + 오른쪽-클릭'
+	L['Save to the bank'] = '은행에 넣기'
+	L['Ctrl + Right-Click'] = 'CTRL + 오른쪽-클릭'
+	L['Load from the bank'] = '은행에서 꺼내기'
+	L['Shift + Left-Click'] = 'SHIFT + 왼쪽-클릭'
+	L['Set sequence to asc'] = '오름차순으로 설정'
+	L['Ctrl + Left-Click'] = 'CTRL + 왼쪽-클릭'
+	L['Set sequence to desc'] = '내림차순으로 설정'
+	
+	L['HELP'] = '도움말을 보려면 "/jpack help"를 입력하세요.'
+elseif loc == "deDE" then
+	L["Click"] = "Linksklick"
+	L["Pack"] = "Packen"
+
+	L["Shift + Right-Click"] = "SHIFT + Rechtsklick"
+	L["Save to the bank"] = "Sichere zur Bank"
+	L["Ctrl + Right-Click"] = "CTRL + Rechtsklick"
+	L["Load from the bank"] = "Lade von der Bank"
+	L["Shift + Left-Click"] = "SHIFT + Linksklick"
+	L["Set sequence to asc"] = "Setze aufsteigende Reihenfolge"
+	L["Ctrl + Left-Click"] = "CTRL + Linksklick"
+	L["Set sequence to desc"] = "Setze absteigende Reihenfolge"
+end
+
 JPack_Ex = CreateFrame("Frame")
-local L = JPack_Ex_Locale
 
 function JPack_Ex:PLAYER_LOGIN()
 	JPack_Ex:BuildButtons()
@@ -12,77 +77,45 @@ function JPack_Ex:PLAYER_LOGIN()
 	JPack_Ex.PLAYER_LOGIN = nil
 end
 
---[[function JPack_Ex:OnLoad()
-	JPack_Ex:RegisterEvent("BANKFRAME_OPENED")
-	JPack_Ex:RegisterEvent("BANKFRAME_CLOSED")
-	if not IsAddOnLoaded("JPack") then 
-		return 
-	else
-		SetJPack_ExButton()
-	end	
-end]]
+JPack_Ex:SetScript("OnEvent", function(self, event, ...) self[event](...) end)
+if IsLoggedIn() then JPack_Ex:PLAYER_LOGIN() else JPack_Ex:RegisterEvent("PLAYER_LOGIN") end
 
-JPack_Ex:SetScript("OnEvent", function(self, event, ...)
-	if self[event]
-		then self[event](self, event, ...)
-	else
-		self:UnregisterEvent(event)
-	end
-end)
-JPack_Ex:RegisterEvent("PLAYER_LOGIN")
-
-local function JPack_Ex_CmdToParam(cmd)
-	if(cmd == "desc")then
-		return 2
-	elseif(cmd == "asc")then
-		return 1
-	elseif(cmd == "save" or cmd == "deposit")then
-		return 4
-	elseif(cmd == "load" or cmd == "draw")then
-		return 8
-	else
-		return 0
-	end
-end
-
-JPACK_LEFT_CLICK  = JPack_Ex_CmdToParam(JPACK_LEFT_CLICK)
-JPACK_RIGHT_CLICK = JPack_Ex_CmdToParam(JPACK_RIGHT_CLICK)
-JPACK_ALT_DOWN    = JPack_Ex_CmdToParam(JPACK_ALT_DOWN)
-JPACK_SHIFT_DOWN  = JPack_Ex_CmdToParam(JPACK_SHIFT_DOWN)
-JPACK_CTRL_DOWN   = JPack_Ex_CmdToParam(JPACK_CTRL_DOWN)
 
 function JPack_Ex:Work(button)
-	local param = 0
-	if button == "LeftButton" then
-		param = bit.bor(param , JPACK_LEFT_CLICK)
-	elseif button == "RightButton" then
-		param = bit.bor(param , JPACK_RIGHT_CLICK)
+	local access, order
+	if ( button == "LeftButton" ) then
+		if IsShiftKeyDown() then
+			access = 1
+		elseif IsControlKeyDown() then
+			access = 2
+		end
+	elseif ( button == "RightButton" ) then
+		if IsShiftKeyDown() then
+			order = 1
+		elseif IsControlKeyDown() then
+			order = 2
+		end
 	end
-	if IsAltKeyDown() then
-		param = bit.bor(param , JPACK_ALT_DOWN)
-	elseif IsControlKeyDown() then
-		param = bit.bor(param , JPACK_CTRL_DOWN)
-	elseif IsShiftKeyDown() then
-		param = bit.bor(param , JPACK_SHIFT_DOWN)	
-	end
-	
-	JPack:Pack(bit.rshift(param,2), bit.band(param, 3))
+	JPack:Pack(access, order)
 end
 
---------------------------------
--- 
---------------------------------
 function JPack_Ex:Build(parent, width, height, point1, point2, point3)
 	local f = CreateFrame("Button", "JPack_ExButton", parent, "UIPanelButtonTemplate");		
 	
 	f:SetWidth(width)
 	f:SetHeight(height)
 	f:SetPoint(point1, point2, point3)
-	f:SetText(L.BUTTON_TEXT)
-	f:RegisterForClicks('anyUp')
+	f:SetText(L["Pack"])
+	f:RegisterForClicks("anyUp")
 	f:SetScript("OnEnter", function(f)
 			GameTooltip:SetOwner(f, "ANCHOR_RIGHT");
-			GameTooltip:SetText(L.BUTTON_TOOLTIP)
+			GameTooltip:AddDoubleLine(L["Click"], L["Pack"], 0, 1, 0, 0, 1, 0)
+			GameTooltip:AddDoubleLine(L["Shift + Left-Click"], L["Save to the bank"], 0, 1, 0, 0, 1, 0)
+			GameTooltip:AddDoubleLine(L["Ctrl + Left-Click"], L["Load from the bank"], 0, 1, 0, 0, 1, 0)
+			GameTooltip:AddDoubleLine(L["Shift + Right-Click"], L["Set sequence to asc"], 0, 1, 0, 0, 1, 0)
+			GameTooltip:AddDoubleLine(L["Ctrl + Right-Click"], L["Set sequence to desc"], 0, 1, 0, 0, 1, 0)
+
+			--GameTooltip:SetText(L.BUTTON_TOOLTIP)
 			GameTooltip:Show();
 		end
 	);
@@ -93,10 +126,6 @@ function JPack_Ex:Build(parent, width, height, point1, point2, point3)
 
 	return f
 end
-
---------------------------------
--- Build Buttons
---------------------------------
 
 function JPack_Ex:BuildButtons()
 	if IsAddOnLoaded("Combuctor") then
@@ -131,7 +160,7 @@ function JPack_Ex:BuildButtons()
 	elseif IsAddOnLoaded("Bagnon") then
 		local id = 0
 		hooksecurefunc(BagnonFrame, "Create", function()
-			local framename = format('BagnonFrame%d', id)
+			local framename = format("BagnonFrame%d", id)
 			id = id + 1
 			local f = getglobal(framename)
 			if f then
@@ -139,7 +168,6 @@ function JPack_Ex:BuildButtons()
 				b:SetFrameStrata("FULLSCREEN")
 			end
 		end)
-		
 	else -- blizzy bag
 		JPack_Ex:Build(ContainerFrame1, 45, 20, "TOPRIGHT", -10, -28)
 		JPack_Ex:Build(BankFrame, 45, 20, "TOPRIGHT", -35, -40)
