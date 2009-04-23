@@ -47,6 +47,8 @@ local JPACK_START_PACK=8
 local JPACK_GUILDBANK_STACKING=9
 local JPACK_GUILDBANK_SORTING=10
 local JPACK_GUILDBANK_COMPLETE=11
+local JPACK_SPEC_BAG_OVER=12
+local JPACK_SPEC_BANK_OVER=13
 local JPACK_STOPPED=0
 
 
@@ -90,6 +92,25 @@ local function getJPackItem(bag,slot,isGB)
 	item.equipLoc, item.texture = GetItemInfo(link)
 	item.itemid = tonumber(link:match("item:(%d+):"))
 	return item
+end
+
+--是否能放入某背包
+local function CanGoInBag(frombag,fromslot, tobag)
+   local item = GetContainerItemLink(frombag,fromslot)
+   -- Get the item's family
+   local itemFamily = GetItemFamily(item)
+   
+   -- If the item is a container, then the itemFamily should be 0
+   --[[
+   local equipSlot = select(9, GetItemInfo(item))
+   if equipSlot == "INVTYPE_BAG" then
+      itemFamily = 0
+   end
+]]--
+   -- Get the bag's family
+   local bagFamily = select(2, GetContainerNumFreeSlots(bag))
+
+   return bagFamily == 0 or bit.band(itemFamily, bagFamily) > 0
 end
 
 --背包是否准备好了（无锁定物品）
@@ -311,6 +332,57 @@ end
 --[[===================================
 		  Main Processing
 =====================================]]
+--移动到特殊背包，如箭袋，灵魂袋，草药袋，矿石袋
+--flag =0 , 背包， flag = 1 bank
+local function moveToSpecialBag(flag)
+	local bagTypes = nil
+	if flag == 0 then
+		bagTypes = JPack.bagSlotTypes
+	elseif flag == 1 then
+		bagTypes = JPack.bankSlotTypes
+		if(not JPack.bankOpened)then return end
+	--elseif guidbank
+	end
+	
+	local fromBags = bagTypes[L.TYPE_BAG]
+	
+	for k,v in pairs(bagTypes) do
+		--针对每种不同的背包,k is type,v is slots
+		if k ~= L.TYPE_BAG then 
+		local toBags = v
+		local frombagIndex,tobagIndex=table.getn(fromBags),table.getn(toBags)
+		local frombag,tobag = fromBags[frombagIndex],toBags[tobagIndex]
+		local fromslot,toslot=GetContainerNumSlots(frombag),GetContainerNumSlots(tobag)
+		--移动
+		while(true) do
+			while(tobagIndex>0 and GetContainerItemLink(tobag,toslot))do
+				--直到找到一个空格
+				tobagIndex,toslot=getPrevSlot(toBags,tobagIndex,toslot)
+			end
+			tobag = toBags[tobagIndex]
+			
+			while(frombagIndex>0 and (not CanGoInBag(fromBags[frombagIndex],fromslot,tobag)))do
+				tobagIndex,toslot=getPrevSlot(toBags,tobagIndex,toslot)
+			end
+			
+			if(frombagIndex<=0 or tobagIndex <=0 or fromslot<=0 or toslot<=0)then 
+				debug("break to move sepical bag")
+				break
+			end
+			if (CursorHasItem() or CursorHasMoney() or CursorHasSpell()) then
+				print(L["WARN"],1,0,0)
+			end
+			PickupContainerItem(frombag,fromslot)
+			PickupContainerItem(tobag,toslot)
+			--next
+			frombagIndex,fromslot=getPrevSlot(fromBags,frombagIndex,fromslot)
+			tobagIndex,toslot=getPrevSlot(toBags,tobag,toslot)
+		end
+		
+		end
+	end
+
+end
 
 --保存到银行
 local function saveToBank()
@@ -808,9 +880,23 @@ function JPack.OnUpdate(self, el)
 			JPACK_STEP=JPACK_STACK_OVER
 		end
 	elseif(JPACK_STEP==JPACK_STACK_OVER)then
-		debug("JPACK_STEP==JPACK_STACK_OVER, 开始向银行保存")
+		debug("JPACK_STEP==JPACK_STACK_OVER, 开始移动到银行特殊背包")
 		if(isAllBagReady())then
 			debug("堆叠完毕,JPack_STEP=JPACK_STACK_OVER")
+			moveToSpecialBag(1)
+			JPACK_STEP = JPACK_SPEC_BANK_OVER
+		end
+		
+	elseif(JPACK_STEP==JPACK_SPEC_BANK_OVER)then
+		debug("JPACK_STEP==JPACK_SPEC_BANK_OVER, 开始移动到特殊背包")
+		if(isAllBagReady())then
+			moveToSpecialBag(0)
+			JPACK_STEP = JPACK_SPEC_BAG_OVER
+		end
+		
+	elseif(JPACK_STEP==JPACK_SPEC_BAG_OVER)then
+		debug("JPACK_STEP==JPACK_SPEC_BAG_OVER, 开始向银行保存")
+		if(isAllBagReady())then
 			if(JPack.deposit)then
 				debug("saveToBank()")
 				saveToBank()
