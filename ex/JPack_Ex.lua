@@ -42,8 +42,8 @@ elseif loc == "zhTW" then
 	L["Ctrl + Right-Click"] = "Ctrl + 右鍵"
 	L["Set sequence to desc"] = "逆序整理"
 elseif loc == "koKR" then
-	L["Click"] = "??"
-	L["Pack"] = "??"
+	L['Click'] = '클릭'
+	L['Pack'] = '정리'
 
 	L['Shift + Right-Click'] = 'SHIFT + 오른쪽-클릭'
 	L['Save to the bank'] = '은행에 넣기'
@@ -107,23 +107,25 @@ function JPack_Ex:Build(parent, width, height, point1, point2, point3)
 	f:SetPoint(point1, point2, point3)
 	f:SetText(L["Pack"])
 	f:RegisterForClicks("anyUp")
+	f:SetScript("OnClick", JPack_Ex.Work)
+	
+	if JPACK_EX_NOTOOLTIP then return f end
+	
 	f:SetScript("OnEnter", function(f)
-			GameTooltip:SetOwner(f, "ANCHOR_RIGHT");
-			GameTooltip:AddDoubleLine(L["Click"], L["Pack"], 0, 1, 0, 0, 1, 0)
-			GameTooltip:AddDoubleLine(L["Shift + Left-Click"], L["Save to the bank"], 0, 1, 0, 0, 1, 0)
-			GameTooltip:AddDoubleLine(L["Ctrl + Left-Click"], L["Load from the bank"], 0, 1, 0, 0, 1, 0)
-			GameTooltip:AddDoubleLine(L["Shift + Right-Click"], L["Set sequence to asc"], 0, 1, 0, 0, 1, 0)
-			GameTooltip:AddDoubleLine(L["Ctrl + Right-Click"], L["Set sequence to desc"], 0, 1, 0, 0, 1, 0)
-
-			--GameTooltip:SetText(L.BUTTON_TOOLTIP)
-			GameTooltip:Show();
+		GameTooltip:SetOwner(f, "ANCHOR_RIGHT");
+		GameTooltip:AddDoubleLine(L["Click"], L["Pack"], 0, 1, 0, 0, 1, 0)
+		GameTooltip:AddDoubleLine(L["Shift + Left-Click"], L["Save to the bank"], 0, 1, 0, 0, 1, 0)
+		GameTooltip:AddDoubleLine(L["Ctrl + Left-Click"], L["Load from the bank"], 0, 1, 0, 0, 1, 0)
+		GameTooltip:AddDoubleLine(L["Shift + Right-Click"], L["Set sequence to asc"], 0, 1, 0, 0, 1, 0)
+		GameTooltip:AddDoubleLine(L["Ctrl + Right-Click"], L["Set sequence to desc"], 0, 1, 0, 0, 1, 0)
+		GameTooltip:Show();
 		end
 	);
+	
 	f:SetScript("OnLeave", function()
 		GameTooltip:Hide();
 	end);
-	f:SetScript("OnClick", JPack_Ex.Work)
-
+	
 	return f
 end
 
