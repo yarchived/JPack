@@ -108,7 +108,7 @@ local function CanGoInBag(frombag,fromslot, tobag)
    end
 ]]--
    -- Get the bag's family
-   local bagFamily = select(2, GetContainerNumFreeSlots(bag))
+   local bagFamily = select(2, GetContainerNumFreeSlots(tobag))
 
    return bagFamily == 0 or bit.band(itemFamily, bagFamily) > 0
 end
