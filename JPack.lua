@@ -48,7 +48,6 @@ local JPACK_GUILDBANK_STACKING=9
 local JPACK_GUILDBANK_SORTING=10
 local JPACK_GUILDBANK_COMPLETE=11
 local JPACK_SPEC_BAG_OVER=12
-local JPACK_SPEC_BANK_OVER=13
 local JPACK_STOPPED=0
 
 
@@ -337,6 +336,7 @@ end
 local function moveToSpecialBag(flag)
 	local bagTypes = nil
 	if flag == 0 then
+		--bagSlotTypes[容器]=[0,1,2,4]  ，bagSlotTypes[箭袋]=[3] 
 		bagTypes = JPack.bagSlotTypes
 	elseif flag == 1 then
 		bagTypes = JPack.bankSlotTypes
@@ -344,6 +344,7 @@ local function moveToSpecialBag(flag)
 	--elseif guidbank
 	end
 	
+	--从容器中取出物品 ,fromBags = 容器
 	local fromBags = bagTypes[L.TYPE_BAG]
 	
 	for k,v in pairs(bagTypes) do
@@ -358,11 +359,12 @@ local function moveToSpecialBag(flag)
 			while(tobagIndex>0 and GetContainerItemLink(tobag,toslot))do
 				--直到找到一个空格
 				tobagIndex,toslot=getPrevSlot(toBags,tobagIndex,toslot)
+				tobag = toBags[tobagIndex]
 			end
-			tobag = toBags[tobagIndex]
 			
-			while(frombagIndex>0 and (not CanGoInBag(fromBags[frombagIndex],fromslot,tobag)))do
-				tobagIndex,toslot=getPrevSlot(toBags,tobagIndex,toslot)
+			while(frombagIndex>0 and (not CanGoInBag(frombag,fromslot,tobag)))do
+				frombagIndex,fromslot=getPrevSlot(fromBags,frombagIndex,toslot)
+				frombag = fromBags[frombagIndex]
 			end
 			
 			if(frombagIndex<=0 or tobagIndex <=0 or fromslot<=0 or toslot<=0)then 
@@ -376,7 +378,7 @@ local function moveToSpecialBag(flag)
 			PickupContainerItem(tobag,toslot)
 			--next
 			frombagIndex,fromslot=getPrevSlot(fromBags,frombagIndex,fromslot)
-			tobagIndex,toslot=getPrevSlot(toBags,tobag,toslot)
+			tobagIndex,toslot=getPrevSlot(toBags,tobagIndex,toslot)
 		end
 		
 		end
@@ -880,16 +882,10 @@ function JPack.OnUpdate(self, el)
 			JPACK_STEP=JPACK_STACK_OVER
 		end
 	elseif(JPACK_STEP==JPACK_STACK_OVER)then
-		debug("JPACK_STEP==JPACK_STACK_OVER, 开始移动到银行特殊背包")
+		debug("JPACK_STEP==JPACK_STACK_OVER, 开始移动到特殊背包")
 		if(isAllBagReady())then
 			debug("堆叠完毕,JPack_STEP=JPACK_STACK_OVER")
 			moveToSpecialBag(1)
-			JPACK_STEP = JPACK_SPEC_BANK_OVER
-		end
-		
-	elseif(JPACK_STEP==JPACK_SPEC_BANK_OVER)then
-		debug("JPACK_STEP==JPACK_SPEC_BANK_OVER, 开始移动到特殊背包")
-		if(isAllBagReady())then
 			moveToSpecialBag(0)
 			JPACK_STEP = JPACK_SPEC_BAG_OVER
 		end
