@@ -370,7 +370,7 @@ local function moveToSpecialBag(flag)
 				tobag = toBags[tobagIndex]
 			end
 			
-			while(frombagIndex>0 and (not CanGoInBag(frombag,fromslot,tobag)))do
+			while(tobagIndex>0 and frombagIndex>0 and (not CanGoInBag(frombag,fromslot,tobag)))do
 				frombagIndex,fromslot=getPrevSlot(fromBags,frombagIndex,fromslot)
 				frombag = fromBags[frombagIndex]
 			end
