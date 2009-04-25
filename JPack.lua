@@ -1,6 +1,4 @@
--- dev modify
-
-local NOGUILDBANK = true
+local DEV_MOD = false
 local debug = function() end
 
 --@debug@
@@ -8,7 +6,7 @@ local debugf = tekDebug and tekDebug:GetFrame("JPack")--tekDebug
 if debugf then
 	debug = function(...) debugf:AddMessage(string.join(", ", ...)) end
 end
-NOGUILDBANK = false
+DEV_MOD = true
 --@end-debug@
 
 
@@ -791,21 +789,20 @@ function JPack:ADDON_LOADED(addon)
 end
 
 function JPack:BANKFRAME_OPENED()
-	JPack.bankOpened=true
+	JPack.bankOpened = true
 end
 
 function JPack:BANKFRAME_CLOSED()
-	JPack.bankOpened=false
-end
-
-function JPack:GUILDBANKFRAME_CLOSED()
-	JPack.guildbankOpened=true
+	JPack.bankOpened = false
 end
 
 function JPack:GUILDBANKFRAME_OPENED()
-	JPack.guildbankOpened=false
+	JPack.guildbankOpened = true
 end
 
+function JPack:GUILDBANKFRAME_CLOSED()
+	JPack.guildbankOpened = false
+end
 
 --[[
 每帧执行，判断当前整理进度并执行相应操作
@@ -819,7 +816,7 @@ function JPack.OnUpdate(self, el)
 	if(JPACK_STEP==JPACK_STARTED)then
 		debug('JPACK_STEP==JPACK_STARTED')
 		-- 判断玩家是否打开公会银行并有相应权限 *** 需要纠正判断
-		if NOGUILDBANK and JPack.guildbankOpened then
+		if DEV_MOD and JPack.guildbankOpened then
 			debug('guildbankOpened')
 			-- 会长直接有全部权限
 			if IsGuildLeader(UnitName("player")) then
