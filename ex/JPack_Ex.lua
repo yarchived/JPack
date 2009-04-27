@@ -77,7 +77,7 @@ function JPack_Ex:PLAYER_LOGIN()
 	JPack_Ex.PLAYER_LOGIN = nil
 end
 
-JPack_Ex:SetScript("OnEvent", function(self, event, ...) self[event](...) end)
+JPack_Ex:SetScript("OnEvent", function(self, event, ...) self[event](event, ...) end)
 if IsLoggedIn() then JPack_Ex:PLAYER_LOGIN() else JPack_Ex:RegisterEvent("PLAYER_LOGIN") end
 
 
@@ -100,7 +100,7 @@ function JPack_Ex:Work(button)
 end
 
 function JPack_Ex:Build(parent, width, height, point1, point2, point3)
-	local f = CreateFrame("Button", "JPack_ExButton", parent, "UIPanelButtonTemplate");		
+	local f = CreateFrame("Button", "JPack_ExButton", parent, "UIPanelButtonTemplate")		
 	
 	f:SetWidth(width)
 	f:SetHeight(height)
@@ -112,52 +112,37 @@ function JPack_Ex:Build(parent, width, height, point1, point2, point3)
 	if JPACK_EX_NOTOOLTIP then return f end
 	
 	f:SetScript("OnEnter", function(f)
-		GameTooltip:SetOwner(f, "ANCHOR_RIGHT");
+		GameTooltip:SetOwner(f, "ANCHOR_RIGHT")
 		GameTooltip:AddDoubleLine(L["Click"], L["Pack"], 0, 1, 0, 0, 1, 0)
 		GameTooltip:AddDoubleLine(L["Shift + Left-Click"], L["Save to the bank"], 0, 1, 0, 0, 1, 0)
 		GameTooltip:AddDoubleLine(L["Ctrl + Left-Click"], L["Load from the bank"], 0, 1, 0, 0, 1, 0)
 		GameTooltip:AddDoubleLine(L["Shift + Right-Click"], L["Set sequence to asc"], 0, 1, 0, 0, 1, 0)
 		GameTooltip:AddDoubleLine(L["Ctrl + Right-Click"], L["Set sequence to desc"], 0, 1, 0, 0, 1, 0)
-		GameTooltip:Show();
+		GameTooltip:Show()
 		end
-	);
+	)
 	
 	f:SetScript("OnLeave", function()
-		GameTooltip:Hide();
-	end);
+		GameTooltip:Hide()
+	end)
 	
 	return f
 end
 
 function JPack_Ex:BuildButtons()
-	if IsAddOnLoaded("Combuctor") then
-		CombuctorFrame1Search:SetPoint("TOPRIGHT",-166,-44)
-		CombuctorFrame2Search:SetPoint("TOPRIGHT",-166,-44)
-		
-		JPack_Ex:Build(CombuctorFrame1, 45, 25, "TOPRIGHT", -50, -40)
-		JPack_Ex:Build(CombuctorFrame2, 45, 20, "TOPRIGHT", -50, -40)
-		
-	elseif IsAddOnLoaded("MyInventory") then
-		JPack_Ex:Build(MyInventoryFrame, 45, 20, "TOPRIGHT", -15, -35)
-		JPack_Ex:Build(MyBankFrame, 45, 20, "TOPRIGHT", -15, -35)
-		
-	elseif IsAddOnLoaded("BaudBag") then
-		JPack_Ex:Build(BBCont1_1, 45, 20, "TOPRIGHT", -40, 20)
-		JPack_Ex:Build(BBCont2_1, 45, 20, "TOPRIGHT", -40, 20)
-		
-	elseif IsAddOnLoaded("OneBag") or IsAddOnLoaded("OneBag3") then
-		JPack_Ex:Build(OneBagFrame, 60, 20, "TOPRIGHT", -105, -6)
-		
-		if IsAddOnLoaded("OneBank") or IsAddOnLoaded("OneBank3") then
-			JPack_Ex:Build(OneBankFrame, 60, 20, "TOPRIGHT", -105, -6)
+	if IsAddOnLoaded("ArkInventory") then
+		local i = 1
+		while i do
+			local arkframe = _G['ARKINV_Frame'..i]
+			if not arkframe then break end
+			self:Build(arkframe, 50, 25, "TOPRIGHT", -135, -15)
+			i = i + 1
 		end
-	elseif IsAddOnLoaded("cargBags") then
-		JPack_Ex:Build(cb_main, 45, 20, "TOPRIGHT", -5, 20)
-		JPack_Ex:Build(cb_bank, 45, 20, "TOPRIGHT", -5, 20)
+		return
 		
 	elseif IsAddOnLoaded("Baggins") then
-		JPack_Ex:Build(BagginsBag1, 45, 20, "TOPRIGHT", -30, -6)
-		JPack_Ex:Build(BagginsBag12, 45, 20, "TOPRIGHT", -30, -6)
+		self:Build(BagginsBag1, 45, 20, "TOPRIGHT", -30, -6)
+		self:Build(BagginsBag12, 45, 20, "TOPRIGHT", -30, -6)
 		
 	elseif IsAddOnLoaded("Bagnon") then
 		local id = 0
@@ -166,14 +151,46 @@ function JPack_Ex:BuildButtons()
 			id = id + 1
 			local f = getglobal(framename)
 			if f then
-				local b = JPack_Ex:Build(f, 45, 20, "TOPRIGHT", -30, -7)
+				local b = self:Build(f, 45, 20, "TOPRIGHT", -30, -7)
 				b:SetFrameStrata("FULLSCREEN")
 			end
 		end)
-	else -- blizzy bag
-		JPack_Ex:Build(ContainerFrame1, 45, 20, "TOPRIGHT", -10, -28)
-		JPack_Ex:Build(BankFrame, 45, 20, "TOPRIGHT", -35, -40)
+		
+	elseif IsAddOnLoaded("BaudBag") then
+		self:Build(BBCont1_1, 45, 20, "TOPRIGHT", -40, 20)
+		self:Build(BBCont2_1, 45, 20, "TOPRIGHT", -40, 20)
+		
+	elseif IsAddOnLoaded("cargBags") then
+		self:Build(cb_main, 45, 20, "TOPRIGHT", -5, 20)
+		self:Build(cb_bank, 45, 20, "TOPRIGHT", -5, 20)
+		
+	elseif IsAddOnLoaded("Combuctor") then
+		CombuctorFrame1Search:SetPoint("TOPRIGHT",-166,-44)
+		CombuctorFrame2Search:SetPoint("TOPRIGHT",-166,-44)
+		self:Build(CombuctorFrame1, 45, 25, "TOPRIGHT", -50, -40)
+		self:Build(CombuctorFrame2, 45, 20, "TOPRIGHT", -50, -40)
+		
+	elseif IsAddOnLoaded("MyInventory") then
+		self:Build(MyInventoryFrame, 45, 20, "TOPRIGHT", -15, -35)
+		self:Build(MyBankFrame, 45, 20, "TOPRIGHT", -15, -35)
+		
+	elseif IsAddOnLoaded("OneBag") or IsAddOnLoaded("OneBag3") then
+		self:Build(OneBagFrame, 60, 20, "TOPRIGHT", -105, -6)
+		if IsAddOnLoaded("OneBank") or IsAddOnLoaded("OneBank3") then
+			self:Build(OneBankFrame, 60, 20, "TOPRIGHT", -105, -6)
+		end
+		
+	else
+		self:Build(ContainerFrame1, 45, 20, "TOPRIGHT", -10, -28)
+		self:Build(BankFrame, 45, 20, "TOPRIGHT", -50, -15)
 	end
+	
+	--self:RegisterEvent("ADDON_LOADED")
+	
 end
 
-
+function JPack_Ex:ADDON_LOADED(addon)
+	if addon == 'Blizzard_GuildBankUI' then
+		JPack_Ex:Build(GuildBankFrame, 45, 20, "TOPRIGHT", -25, -15)
+	end
+end
