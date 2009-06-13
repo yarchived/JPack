@@ -24,8 +24,9 @@ L["Unknown command"] = "Unknown command"
 -- Help info
 L["Slash command"] = "Slash command"
 L["Pack"] = "Pack"
-L["Set sequence to asc"] = "Set sequence to asc"
-L["Set sequence to desc"] = "Set sequence to desc"
+L["Set sequence to ascend"] = "Set sequence to asc"
+L["Set sequence to descend"] = "Set sequence to desc"
 L["Save to the bank"] = "Save to the bank"
 L["Load from the bank"] = "Load from the bank"
+L["Packup guildbank"] = 'Packup guildbank'
 L["Print help info"] = "Print help info"

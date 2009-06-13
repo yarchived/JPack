@@ -1,10 +1,10 @@
-local DEV_MOD = false
+local DEV_MOD
 local debug = function() end
 
 --@debug@
 local debugf = tekDebug and tekDebug:GetFrame("JPack")--tekDebug
 if debugf then
-	debug = function(...) debugf:AddMessage(string.join(", ", ...)) end
+	debug = function(...) debugf:AddMessage(string.join(", ", tostringall(...))) end
 end
 DEV_MOD = true
 --@end-debug@
@@ -14,19 +14,21 @@ DEV_MOD = true
 			Local
 =====================================]]
 JPack = CreateFrame"Frame"
+JPack.DEV_MOD = DEV_MOD
 
-JPack.bankOpened=false
-JPack.guildbankOpened=false
-JPack.deposit=false
-JPack.draw=false
-JPack.bagGroups={}
-JPack.packingGroupIndex=1
+JPack.bankOpened = false
+JPack.guildbankOpened = false
+JPack.deposit = false
+JPack.draw = false
+JPack.packupguildbank = false
+JPack.bagGroups = {}
+JPack.packingGroupIndex = 1
 JPack.packingBags={}
+JPack.updatePeriod = .1
 
-local version = GetAddOnMetadata("JPack", "Version")
-local L = JPackLocale
+local version = GetAddOnMetadata("JPack", "Version") or "alpha-version"
+local L = setmetatable(JPackLocale, {__index=function(t,i) return i end})
 
---local interval=0.1
 local bagSize=0
 local packingBags={}
 local JPACK_MAXMOVE_ONCE=3
@@ -53,17 +55,15 @@ local JPACK_STOPPED=0
 			lib
 =====================================]]
 
---[[if table.getn == nil then
-	local fun, err = loadstring("return function(tb) return #tb end")
-	table.getn = fun()
-end]]
-
---[[if not table.getn then
-	table.getn = function(tb) return #tb end
-end]]
-
 local function print(msg,r,g,b)
 	DEFAULT_CHAT_FRAME:AddMessage('JPack: '..msg, r or .41, g or .8, b or .94)
+end
+
+local function CheckCursor()
+	ClearCursor()
+	if GetCursorInfo() then
+		return true
+	end
 end
 
 local function IndexOfTable(t,v)
@@ -77,11 +77,11 @@ end
 
 --[[
 获得一个 JPack 格式的物品对象
-isGB - 是否为工会银行
+isGB = true, 工会银行
 ]]
 local function getJPackItem(bag,slot,isGB)
 	local link = isGB and GetGuildBankItemLink(bag,slot) or GetContainerItemLink(bag,slot) 
-	if not link then return nil end
+	if not link then return end
 	local item={}
 	item.slotId=c
 	item.name, item.link, item.rarity, 
@@ -94,7 +94,7 @@ end
 --是否能放入某背包
 local function CanGoInBag(frombag,fromslot, tobag)
    local item = GetContainerItemLink(frombag,fromslot)
-   if(item==nil)then  return false end
+   if not item then return false end
    -- Get the item's family
    local itemFamily = GetItemFamily(item)
    
@@ -124,7 +124,7 @@ end
 local function isGBReady(tab)
 	for i = 1, 98 do -- 每页98个格子
 		local _,_,locked = GetGuildBankItemInfo(tab or currentGBTab, i)
-		if locked then return false end
+		if locked then return end
 	end
 	return true
 end
@@ -143,7 +143,7 @@ end
 return 1xxx 非垃圾 ，0xxx for 垃圾，xxx为（999-JPACK_ORDER中所定的位置）
 ]]
 local function getPerffix(item)
-	if(item==nil)then return nil end
+	if not item then return end
 	
 	--按名称获取顺序
 	local i=IndexOfTable(JPACK_ORDER,item.name)
@@ -377,7 +377,7 @@ local function moveToSpecialBag(flag)
 				debug("break to move sepical bag")
 				break
 			end
-			if (CursorHasItem() or CursorHasMoney() or CursorHasSpell()) then
+			if CheckCursor() then
 				print(L["WARN"],1,0,0)
 			end
 			PickupContainerItem(frombag,fromslot)
@@ -417,7 +417,7 @@ local function saveToBank()
 				debug("break to save")
 				break
 			end
-			if (CursorHasItem() or CursorHasMoney() or CursorHasSpell()) then
+			if CheckCursor() then
 				print(L["WARN"],1,0,0)
 			end
 			PickupContainerItem(bagTypes[bag],slot)
@@ -452,7 +452,7 @@ local function loadFromBank()
 			if(bkBag<=0 or bag <=0 or bkSlot<=0 or slot<=0)then 
 				break
 			end
-			if (CursorHasItem() or CursorHasMoney() or CursorHasSpell()) then
+			if CheckCursor() then
 				print(L["WARN"],1,0,0)
 			end
 			PickupContainerItem(bkTypes[bkBag],bkSlot)
@@ -683,7 +683,6 @@ local function stackOnce()
 			if(item)then
 				if(not locked)then
 					if(itemCount < item.stackCount)then
-						-- item.name ==> item.itemid
 						slotInfo = pendingStack[item.itemid]
 						if(slotInfo)then
 							PickupContainerItem(bag,slot)
@@ -721,27 +720,29 @@ end
 --堆叠一次公会银行，返回是否结束
 local function GBstackOnce()
 	local item,slotInfo
-	local pendingStackGB={}
-	local complet=true
+	local pendingStack={}
+	local complet = true
 	for slot = 98,1,-1 do
 		local texture, itemCount, locked = GetGuildBankItemInfo(currentGBTab, slot)
-		item = getJPackItem(currentGBTab,slot,true)
-		if(item)then
-			if(not locked)then
-				if(itemCount < item.stackCount)then
-					-- item.name ==> item.itemid
-					slotInfo = pendingStack[item.itemid]
-					if(slotInfo)then
-						PickupGuildBankItem(currentGBTab,slot)
-						PickupGuildBankItem(slotInfo[1],slotInfo[2])
-						pendingStack[item.itemid]=nil
-						complet = false
-					else
-						pendingStack[item.itemid]={currentGBTab,slot}
+		if texture then -- if there is an item in this slot
+			item = getJPackItem(currentGBTab,slot,true) -- tab, slot, isGuildBank
+			if(item) then
+				if(not locked)then
+					if(itemCount < item.stackCount)then
+						slotInfo = pendingStack[item.itemid]
+						if(slotInfo)then
+							JPack:GBMoved(true)
+							PickupGuildBankItem(currentGBTab,slot)
+							PickupGuildBankItem(slotInfo[1],slotInfo[2])
+							pendingStack[item.itemid]=nil
+							complet = false
+						else
+							pendingStack[item.itemid]={currentGBTab,slot}
+						end
 					end
+				else
+					complet = false
 				end
-			else
-				complet = false
 			end
 		end
 	end
@@ -771,6 +772,16 @@ end
 		Events/slash..etc..
 =====================================]]
 
+local function stopPacking()
+	if JPack:GetScript"OnUpdate" then
+		JPack:SetScript("OnUpdate", nil)
+	end
+	
+	if JPack:IsEventRegistered("GUILDBANKBAGSLOTS_CHANGED") or JPack.packupguildbank then
+		JPack:UnregisterEvent("GUILDBANKBAGSLOTS_CHANGED")
+	end
+end
+
 JPack:SetScript("OnEvent", function(self, event, ...) debug(event); self[event](self, ...) end)
 
 JPack:RegisterEvent"ADDON_LOADED"
@@ -779,13 +790,31 @@ JPack:RegisterEvent"BANKFRAME_CLOSED"
 JPack:RegisterEvent"GUILDBANKFRAME_CLOSED"
 JPack:RegisterEvent"GUILDBANKFRAME_OPENED"
 
+JPack.OnLoad = {}
+JPack.OnLoad_GB = {}
 
 function JPack:ADDON_LOADED(addon)
-	if addon ~= 'JPack' then return end
-	JPackDB = JPackDB or {}
-
-	-- welcome!
-	print(string.format('%s %s', version, L["HELP"]))
+	if addon == 'JPack' then
+		debug'JPack loaded'
+		JPackDB = JPackDB or {}
+		
+		for k, v in pairs(JPack.OnLoad) do v() end
+		JPack.OnLoad = nil
+		
+		print(format('%s %s', version, L["HELP"]))
+	elseif addon == 'Blizzard_GuildBankUI' then
+		debug'Blizzard_GuildBankUI loaded'
+		for k, v in pairs(JPack.OnLoad_GB) do v() end
+		JPack.OnLoad_GB = nil
+	else
+		return
+	end
+	
+	if not (JPack.OnLoad or JPack.OnLoad_GB) then
+		debug'Unregister ADDON_LOADED'
+		JPack:UnregisterEvent("ADDON_LOADED")
+		JPack.ADDON_LOADED = nil
+	end
 end
 
 function JPack:BANKFRAME_OPENED()
@@ -794,6 +823,7 @@ end
 
 function JPack:BANKFRAME_CLOSED()
 	JPack.bankOpened = false
+	stopPacking()
 end
 
 function JPack:GUILDBANKFRAME_OPENED()
@@ -802,58 +832,14 @@ end
 
 function JPack:GUILDBANKFRAME_CLOSED()
 	JPack.guildbankOpened = false
+	if JPack.packupguildbank then stopPacking() end
 end
 
---[[
-每帧执行，判断当前整理进度并执行相应操作
-]]--
-local elapsed = 0
-function JPack.OnUpdate(self, el)
-	elapsed = elapsed + el
-	if elapsed < .1 then return end
-	elapsed = 0
-	--debug("OnUpdate!")
-	if(JPACK_STEP==JPACK_STARTED)then
-		debug('JPACK_STEP==JPACK_STARTED')
-		-- 判断玩家是否打开公会银行并有相应权限 *** 需要纠正判断
-		if DEV_MOD and JPack.guildbankOpened then
-			debug('guildbankOpened')
-			-- 会长直接有全部权限
-			if IsGuildLeader(UnitName("player")) then
-				debug('player IsGuildLeader')
-				currentGBTab = GetCurrentGuildBankTab() -- 取得当前打开页
-				debug('currentGBTab: ',currentGBTab)
-				JPACK_STEP=JPACK_GUILDBANK_STACKING -- 直接进入工会银行堆叠
-			else
-				--[[currentGBTab = GetCurrentGuildBankTab() -- 取得当前打开页
-				debug('currentGBTab: '..currentGBTab)
-				canView, canDeposit, stacksPerDay = GetGuildBankTabPermissions(currentGBTab)
-				debug('canView = '..(canView and 'true' or 'false'))
-				debug('canDeposit = '..(canDeposit and 'true' or 'false'))
-				debug('stacksPerDay = '..(stacksPerDay or 'nil'))
-				if canView and canDeposit and stacksPerDay > 999 then -- 判断拥有全部权限
-					JPACK_STEP=JPACK_GUILDBANK_STACKING -- 进入工会银行堆叠
-				else
-					currentGBTab=nil
-					JPACK_STEP=JPACK_GUILDBANK_COMPLETE -- 无足够权限 结束公会银行操作 开始普通操作
-				end]]
-				JPACK_STEP=JPACK_GUILDBANK_COMPLETE
-			end
-		else
-			-- 未打开公会银行直接开始普通整理
-			JPACK_STEP=JPACK_GUILDBANK_COMPLETE
-		end
-		debug('guildbankOpened, JPACK_STEP= ',JPACK_STEP)
-	-- 开始堆叠
-	elseif(JPACK_STEP==JPACK_GUILDBANK_STACKING)then
-		if(GBstackOnce()) then -- 反复堆叠, 直至全部堆叠完毕开始整理工作
-			JPACK_STEP=JPACK_GUILDBANK_SORTING
-		end
-	-- 开始移动整理
-	elseif(JPACK_STEP==JPACK_GUILDBANK_SORTING)then
-		if(isGBReady())then
---[=[TODO
 
+--[=[
+	GuildBank packup
+	
+	
 排序可以参考 银行的整理，但由于pick银行和pick背包都是相同的api只是背包的bagId不同 ，
 而公会银行则是完全使用了另外一套api，这里处理起来有些难度。
 
@@ -875,15 +861,87 @@ function JPack.OnUpdate(self, el)
  bag2，slot2 可以没有物品，bag1，slot1 必须有物品。
  此处要做的修改是，bag1，bag2 如果是背包或银行则使用原有的pickup函数，
  如果bag1、bag2是公会银行，则使用公会银行的pickup函数。
+
 ]=]
-			
-			
+
+
+--[[
+	GUILDBANKBAGSLOTS_CHANGED will fire THREE times when you move a item
+	before this event fired, NOTHING you can do with the guildbank
+	
+	GuildBank movement check
+]]
+local GUILDBANKBAGSLOTS_CHANGED_TIMES = 0
+function JPack:GUILDBANKBAGSLOTS_CHANGED()
+	GUILDBANKBAGSLOTS_CHANGED_TIMES = GUILDBANKBAGSLOTS_CHANGED_TIMES + 1
+end
+
+function JPack:GBCanMove()
+	if (GUILDBANKBAGSLOTS_CHANGED_TIMES ~= 0) and (GUILDBANKBAGSLOTS_CHANGED_TIMES%3 == 0) then
+		return true
+	end
+end
+
+function JPack:GBMoved(isTrue)
+	if isTrue then
+		GUILDBANKBAGSLOTS_CHANGED_TIMES = 0
+	end
+end
+
+
+--[[
+	bag/bank packup
+	onupdate script to move items
+]]
+local elapsed = 0
+function JPack.OnUpdate(self, el)
+	elapsed = elapsed + el
+	if elapsed < self.updatePeriod then return end
+	elapsed = 0
+	debug("\nOnUpdate!\n")
+	if DEV_MOD and JPACK_STEP==JPACK_STARTED and JPack.guildbankOpened and JPack.packupguildbank then
+		debug"整理开始, 工会银行整理"
+		
+		-- 取得当前打开页
+		currentGBTab = GetCurrentGuildBankTab()
+		debug('currentGBTab: ',currentGBTab)
+		
+		-- 判断玩家是否打开公会银行并有相应权限 *** 需要纠正判断
+		if IsGuildLeader(UnitName("player")) then
+			JPACK_STEP=JPACK_GUILDBANK_STACKING -- 直接进入工会银行堆叠
+		else
+			local name, icon, isViewable, canDeposit, numWithdrawals, remainingWithdrawals = GetGuildBankTabInfo(currentGBTab)
+			debug('isViewable ', isViewable, 'canDeposit ', canDeposit, 'remainingWithdrawals', remainingWithdrawals)
+			if isViewable and canDeposit then -- 拥有移动权限
+				JPACK_STEP=JPACK_GUILDBANK_STACKING -- 进入工会银行堆叠
+			else
+				currentGBTab = nil
+				JPACK_STEP=JPACK_GUILDBANK_COMPLETE -- 无足够权限 结束整理
+			end
 		end
+	-- restack
+	elseif(JPACK_STEP == JPACK_GUILDBANK_STACKING)then
+		if JPack:GBCanMove() then
+			if GBstackOnce() then
+				JPACK_STEP = JPACK_GUILDBANK_SORTING
+			end
+		end
+	-- 计算排序, 移动物品
+	elseif(JPACK_STEP == JPACK_GUILDBANK_SORTING)then
+		JPACK_STEP = JPACK_GUILDBANK_COMPLETE
+		_G.print'123123123'
+		--if isGBReady() then
+	
+	--公会银行整理结束, 结束整理工作
+	elseif(JPACK_STEP == JPACK_GUILDBANK_COMPLETE) then
+		debug"GUILDBANK PACKUP COMPLETE"
+		print(L["COMPLETE"])
+		JPack:UnregisterEvent("GUILDBANKBAGSLOTS_CHANGED")
 		
-		
-	--公会银行整理结束,开始普通整理
-	elseif(JPACK_STEP==JPACK_GUILDBANK_COMPLETE)then
-		if(stackOnce())then
+	-- 普通整理
+	elseif JPACK_STEP==JPACK_STARTED then
+		debug"普通整理"
+		if stackOnce() then
 			JPACK_STEP=JPACK_STACK_OVER
 		end
 	elseif(JPACK_STEP==JPACK_STACK_OVER)then
@@ -894,7 +952,6 @@ function JPack.OnUpdate(self, el)
 			moveToSpecialBag(0)
 			JPACK_STEP = JPACK_SPEC_BAG_OVER
 		end
-		
 	elseif(JPACK_STEP==JPACK_SPEC_BAG_OVER)then
 		debug("JPACK_STEP==JPACK_SPEC_BAG_OVER, 开始向银行保存")
 		if(isAllBagReady())then
@@ -926,8 +983,7 @@ function JPack.OnUpdate(self, el)
 	elseif(JPACK_STEP==JPACK_PACKING)then
 		--排序结束
 		--移动物品
-		local continueMove=moveOnce()
-		if(not continueMove)then
+		if not moveOnce() then
 			JPack.packingGroupIndex=JPack.packingGroupIndex + 1
 			debug("index", JPack.packingGroupIndex)
 			JPack.packingBags=JPack.bagGroups[JPack.packingGroupIndex]
@@ -938,7 +994,7 @@ function JPack.OnUpdate(self, el)
 				end
 			end
 			if(JPack.packingBags==nil)then
-				--整理结束
+				debug"PACKUP COMPLETE"
 				JPACK_STEP=JPACK_STOPPED
 				JPack.bagGroups={}
 				print(L["COMPLETE"])
@@ -953,18 +1009,23 @@ function JPack.OnUpdate(self, el)
 	end
 end
 
-
 local function pack()
-	if (CursorHasItem() or CursorHasMoney() or CursorHasSpell()) then
+	debug("\n\n\n\nPACK START")
+	if CheckCursor() then
 		print(L["WARN"],2,0.28,2)
 	else
-		groupBags()
 		JPACK_STEP=JPACK_STARTED
+		if JPack.packupguildbank then
+			JPack:GBMoved(true)
+			JPack:RegisterEvent"GUILDBANKBAGSLOTS_CHANGED"
+		else
+			groupBags()
+		end
+		
 		elapsed = 1
 		JPack:SetScript("OnUpdate", JPack.OnUpdate)
 	end
 end
-
 
 SLASH_JPACK1 = "/jpack"
 SLASH_JPACK2 = "/jp"
@@ -980,14 +1041,19 @@ SlashCmdList.JPACK = function(msg)
 		JPack:Pack(1)
 	elseif(c=="draw" or c=="load")then
 		JPack:Pack(2)
+	elseif(DEV_MOD and c=="gb" or c=="guildbank") then
+		JPack:Pack(3)
+	elseif(c == "stop") then
+		stopPacking()
 	elseif(c=="help")then
 		local text = "%s - |cffffffff%s|r"
 		print(L["Slash command"]..": /jpack |cffffffffor|r /jp")
 		print(format(text, "/jp", L["Pack"]))
-		print(format(text, "/jp asc", L["Set sequence to asc"]))
-		print(format(text, "/jp desc", L["Set sequence to desc"]))
+		print(format(text, "/jp asc", L["Set sequence to ascend"]))
+		print(format(text, "/jp desc", L["Set sequence to descend"]))
 		print(format(text, "/jp deposit |cffffffffor|r save", L["Save to the bank"]))
 		print(format(text, "/jp draw |cffffffffor|r load", L["Load from the bank"]))
+		if DEV_MOD then print(format(text, "/jp gb |cffffffffor|r guildback", L["Packup guildbank"])) end
 		print(format(text, "/jp help", L["Print help info"]))
 	else
 		print(format("%s: |cffff0000%s|r , %s", L["Unknown command"], c, L["HELP"]))
@@ -1004,19 +1070,23 @@ end
 	access	
 			1	save
 			2	load
-			nil	no action
+			3	packup guild bank
+			nil	just pack the bag (and bank)
 	order		
 			1	asc
 			2	desc
-			nil	last-time-order or default
+			nil	last-time-order
 ]]
 function JPack:Pack(access, order)
-	JPack.deposit=false
-	JPack.draw=false
+	JPack.deposit = false
+	JPack.draw = false
+	JPack.packupguildbank = false
 	if access == 1 then
-		JPack.deposit=true
+		JPack.deposit = true
 	elseif access == 2 then
-		JPack.draw=true
+		JPack.draw = true
+	elseif access == 3 and DEV_MOD then
+		JPack.packupguildbank = true
 	end
 	if order == 1 then
 		JPackDB.asc=true
@@ -1025,4 +1095,35 @@ function JPack:Pack(access, order)
 	end
 	
 	pack()
+end
+
+--[[
+	local addon = {}
+	addon.onload = function()
+		-- blahblahblah
+	end
+	
+	JPack:RegisterOnLoadCallBack(addon, 'onload')
+]]
+
+function JPack:RegisterOnLoadCallBack(method, handler)
+	if handler and type(handler) == 'string' and type(method) == 'table' then
+		method = method[handler]
+	end
+	if JPack.OnLoad then
+		tinsert(JPack.OnLoad, method)
+	else
+		method()
+	end
+end
+
+function JPack:RegisterGBOnLoadCallBack(method, handler)
+	if handler and type(handler) == 'string' and type(method) == 'table' then
+		method = method[handler]
+	end
+	if JPack.OnLoad_GB then
+		tinsert(JPack.OnLoad_GB, method)
+	else
+		method()
+	end
 end
