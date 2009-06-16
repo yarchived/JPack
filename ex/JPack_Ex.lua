@@ -152,14 +152,18 @@ local function onLoad()
 				local framename = format('BagnonFrame%d', id)
 				id = id + 1
 				local f = getglobal(framename)
-				if f then
-					local b = BuildButton(f, 45, 20, 'TOPRIGHT', -30, -7)
-					b:SetFrameStrata('FULLSCREEN')
-				end
+				if not f then return end
+				local b = BuildButton(f, 45, 20, 'TOPRIGHT', -30, -7)
+				b:SetFrameStrata('FULLSCREEN')
 			end)
 		else
-			hooksecurefunc(Bagnon, 'CreateFrame', function(self, name)
-				BuildButton(_G['BagnonFrame'..name], 45, 20, 'TOPRIGHT', -30, -8)
+			local id = 1
+			hooksecurefunc(Bagnon.Frame, 'New', function(self, name)
+				local f = getglobal('BagnonFrame'..id)
+				if not f then return end
+				local b = BuildButton(f, 45, 20, 'TOPRIGHT', -50, -8)
+				b:SetFrameStrata('FULLSCREEN')
+				id = id + 1
 			end)
 		end
 	elseif IsAddOnLoaded('BaudBag') then
