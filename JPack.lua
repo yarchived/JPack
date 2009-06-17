@@ -1,4 +1,4 @@
-local DEV_MOD
+local DEV_MOD = false
 local debug = function() end
 
 --@debug@
@@ -28,6 +28,65 @@ JPack.updatePeriod = .1
 
 local version = GetAddOnMetadata("JPack", "Version") or "alpha-version"
 local L = setmetatable(JPackLocale, {__index=function(t,i) return i end})
+
+local RegisterEvent = JPack.RegisterEvent
+local UnregisterEvent = JPack.UnregisterEvent
+local event_table = {}
+
+function JPack:RegisterEvent(event, func)
+	if not func then
+		func = self[event]
+	end
+	if type(func) ~= 'function' then return end
+
+	local curr = event_table[event]
+	if curr then
+		if type(curr) == 'function' then
+			event_table[event] = {curr, func}
+		else -- table
+			for k, v in pairs(curr) do
+				if v == func then return end
+			end
+			tinsert(curr, func)
+		end
+	else
+		event_table[event] = func
+		RegisterEvent(self,event)
+	end
+end
+
+function JPack:UnregisterEvent(event, func)
+	if not func then
+		func = self[event]
+	end
+	if type(func) ~= 'function' then return end
+	
+	local curr = event_table[event]
+	if type(curr) == 'function' then
+		event_table[event] = nil
+		UnregisterEvent(self, event)
+	else
+		for k,v in pairs(curr) do
+			if v == func then
+				tremove(curr, k)
+				return
+			end
+		end
+	end
+end
+
+JPack:SetScript("OnEvent", function(self, event, ...)
+	debug('OnEvent', event, ...)
+	local handler = event_table[event]
+	if type(handler) == 'function' then
+		handler(self, event, ...)
+	else
+		for k, func in pairs(handler) do
+			func(self, event, ...)
+		end
+	end
+end)
+
 
 local bagSize=0
 local packingBags={}
@@ -681,8 +740,8 @@ local function stackOnce()
 			local texture, itemCount, locked, quality, readable = GetContainerItemInfo(bag, slot)
 			item = getJPackItem(bag,slot)
 			if(item)then
-				if(not locked)then
-					if(itemCount < item.stackCount)then
+				if (not locked) then
+					if (item.stackCount ~= 1) and (itemCount < item.stackCount)then
 						slotInfo = pendingStack[item.itemid]
 						if(slotInfo)then
 							PickupContainerItem(bag,slot)
@@ -777,43 +836,23 @@ local function stopPacking()
 		JPack:SetScript("OnUpdate", nil)
 	end
 	
-	if JPack:IsEventRegistered("GUILDBANKBAGSLOTS_CHANGED") or JPack.packupguildbank then
+	if JPack.packupguildbank then
 		JPack:UnregisterEvent("GUILDBANKBAGSLOTS_CHANGED")
 	end
 end
 
-JPack:SetScript("OnEvent", function(self, event, ...) debug(event); self[event](self, ...) end)
-
-JPack:RegisterEvent"ADDON_LOADED"
-JPack:RegisterEvent"BANKFRAME_OPENED"
-JPack:RegisterEvent"BANKFRAME_CLOSED"
-JPack:RegisterEvent"GUILDBANKFRAME_CLOSED"
-JPack:RegisterEvent"GUILDBANKFRAME_OPENED"
 
 JPack.OnLoad = {}
 JPack.OnLoad_GB = {}
 
-function JPack:ADDON_LOADED(addon)
+function JPack:ADDON_LOADED(event, addon)
 	if addon == 'JPack' then
 		debug'JPack loaded'
 		JPackDB = JPackDB or {}
 		
-		for k, v in pairs(JPack.OnLoad) do v() end
-		JPack.OnLoad = nil
-		
 		print(format('%s %s', version, L["HELP"]))
-	elseif addon == 'Blizzard_GuildBankUI' then
-		debug'Blizzard_GuildBankUI loaded'
-		for k, v in pairs(JPack.OnLoad_GB) do v() end
-		JPack.OnLoad_GB = nil
-	else
-		return
-	end
-	
-	if not (JPack.OnLoad or JPack.OnLoad_GB) then
-		debug'Unregister ADDON_LOADED'
-		JPack:UnregisterEvent("ADDON_LOADED")
-		JPack.ADDON_LOADED = nil
+		self:UnregisterEvent("ADDON_LOADED")
+		self.ADDON_LOADED = nil
 	end
 end
 
@@ -832,9 +871,15 @@ end
 
 function JPack:GUILDBANKFRAME_CLOSED()
 	JPack.guildbankOpened = false
-	if JPack.packupguildbank then stopPacking() end
+	if JPACK_STEP~=JPACK_STOPPED and JPack.packupguildbank then stopPacking() end
 end
 
+
+JPack:RegisterEvent"ADDON_LOADED"
+JPack:RegisterEvent"BANKFRAME_OPENED"
+JPack:RegisterEvent"BANKFRAME_CLOSED"
+JPack:RegisterEvent"GUILDBANKFRAME_CLOSED"
+JPack:RegisterEvent"GUILDBANKFRAME_OPENED"
 
 --[=[
 	GuildBank packup
@@ -929,7 +974,7 @@ function JPack.OnUpdate(self, el)
 	-- 计算排序, 移动物品
 	elseif(JPACK_STEP == JPACK_GUILDBANK_SORTING)then
 		JPACK_STEP = JPACK_GUILDBANK_COMPLETE
-		_G.print'123123123'
+		--_G.print'123123123'
 		--if isGBReady() then
 	
 	--公会银行整理结束, 结束整理工作
@@ -1095,35 +1140,4 @@ function JPack:Pack(access, order)
 	end
 	
 	pack()
-end
-
---[[
-	local addon = {}
-	addon.onload = function()
-		-- blahblahblah
-	end
-	
-	JPack:RegisterOnLoadCallBack(addon, 'onload')
-]]
-
-function JPack:RegisterOnLoadCallBack(method, handler)
-	if handler and type(handler) == 'string' and type(method) == 'table' then
-		method = method[handler]
-	end
-	if JPack.OnLoad then
-		tinsert(JPack.OnLoad, method)
-	else
-		method()
-	end
-end
-
-function JPack:RegisterGBOnLoadCallBack(method, handler)
-	if handler and type(handler) == 'string' and type(method) == 'table' then
-		method = method[handler]
-	end
-	if JPack.OnLoad_GB then
-		tinsert(JPack.OnLoad_GB, method)
-	else
-		method()
-	end
 end

@@ -126,11 +126,14 @@ function BuildButton(parent, width, height, point1, point2, point3)
 	return f
 end
 
-local function GBLoad()
+local function ADDON_LOADED(self,event,addon)
+	if addon ~= 'Blizzard_GuildBankUI' then return end
 	BuildButton(GuildBankFrame, 45, 20, 'TOPRIGHT', -25, -15)
+	self:UnregisterEvent('ADDON_LOADED', ADDON_LOADED)
 end
 
 local function onLoad()
+	JPack:UnregisterEvent('PLAYER_LOGIN', onLoad)
 	if IsAddOnLoaded('ArkInventory') then
 		local i = 1
 		while i do
@@ -153,16 +156,14 @@ local function onLoad()
 				id = id + 1
 				local f = getglobal(framename)
 				if not f then return end
-				local b = BuildButton(f, 45, 20, 'TOPRIGHT', -30, -7)
-				b:SetFrameStrata('FULLSCREEN')
+				BuildButton(f, 45, 20, 'TOPRIGHT', -30, -7):SetFrameStrata('FULLSCREEN')
 			end)
 		else
 			local id = 1
 			hooksecurefunc(Bagnon.Frame, 'New', function(self, name)
 				local f = getglobal('BagnonFrame'..id)
 				if not f then return end
-				local b = BuildButton(f, 45, 20, 'TOPRIGHT', -50, -8)
-				b:SetFrameStrata('FULLSCREEN')
+				BuildButton(f, 45, 20, 'TOPRIGHT', -50, -8):SetFrameStrata('FULLSCREEN')
 				id = id + 1
 			end)
 		end
@@ -191,7 +192,7 @@ local function onLoad()
 		BuildButton(BankFrame, 45, 20, 'TOPRIGHT', -50, -15)
 	end
 	
-	if JPack.DEV_MOD then JPack:RegisterGBOnLoadCallBack(GBLoad) end
+	if JPack.DEV_MOD then JPack:RegisterEvent('ADDON_LOADED', ADDON_LOADED) end
 end
 
-JPack:RegisterOnLoadCallBack(onLoad)
+JPack:RegisterEvent('PLAYER_LOGIN', onLoad)

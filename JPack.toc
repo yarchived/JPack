@@ -3,7 +3,7 @@
 ## Title: JPack
 ## Notes: Quick (re)sort out your items in your bags/bank/guildbank!
 ## Notes-zhCN: 背包整理
-## Version: 0.7.2
+## Version: 0.7.3
 ## SavedVariables: JPackDB
 #@debug@
 ## OptionalDeps: tekDebug
