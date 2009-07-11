@@ -36,6 +36,8 @@ local event_table = {}
 function JPack:RegisterEvent(event, func)
 	if not func then
 		func = self[event]
+	elseif type(func) == 'string' then
+		func = self[func]
 	end
 	if type(func) ~= 'function' then return end
 
@@ -58,6 +60,8 @@ end
 function JPack:UnregisterEvent(event, func)
 	if not func then
 		func = self[event]
+	elseif type(func) == 'string' then
+		func = self[func]
 	end
 	if type(func) ~= 'function' then return end
 	
@@ -852,6 +856,14 @@ function JPack:ADDON_LOADED(event, addon)
 		
 		print(format('%s %s', version, L["HELP"]))
 		self:UnregisterEvent("ADDON_LOADED")
+		
+		
+		JPack:RegisterEvent"ADDON_LOADED"
+		JPack:RegisterEvent"BANKFRAME_OPENED"
+		JPack:RegisterEvent"BANKFRAME_CLOSED"
+		JPack:RegisterEvent"GUILDBANKFRAME_CLOSED"
+		JPack:RegisterEvent"GUILDBANKFRAME_OPENED"
+		
 		self.ADDON_LOADED = nil
 	end
 end
@@ -873,13 +885,6 @@ function JPack:GUILDBANKFRAME_CLOSED()
 	JPack.guildbankOpened = false
 	if JPACK_STEP~=JPACK_STOPPED and JPack.packupguildbank then stopPacking() end
 end
-
-
-JPack:RegisterEvent"ADDON_LOADED"
-JPack:RegisterEvent"BANKFRAME_OPENED"
-JPack:RegisterEvent"BANKFRAME_CLOSED"
-JPack:RegisterEvent"GUILDBANKFRAME_CLOSED"
-JPack:RegisterEvent"GUILDBANKFRAME_OPENED"
 
 --[=[
 	GuildBank packup
