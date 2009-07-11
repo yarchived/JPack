@@ -126,7 +126,7 @@ local function CheckCursor()
 end
 
 local function IndexOfTable(t,v)
-	for i=1,table.getn(t) do
+	for i=1,#t do
 		if(v==t[i])then
 			return i
 		end
@@ -190,8 +190,8 @@ end
 
 --是否所有背包准备好了
 local function isAllBagReady()
-	for i=1,table.getn(JPack.bagGroups) do
-		for j=1,table.getn(JPack.bagGroups[i]) do
+	for i=1,#JPack.bagGroups do
+		for j=1,#JPack.bagGroups[i] do
 			if(not isBagReady(JPack.bagGroups[i][j])) then return false end
 		end
 	end
@@ -409,7 +409,7 @@ local function moveToSpecialBag(flag)
 		--针对每种不同的背包,k is type,v is slots
 		if k ~= L.TYPE_BAG then 
 		local toBags = v
-		local frombagIndex,tobagIndex=table.getn(fromBags),table.getn(toBags)
+		local frombagIndex,tobagIndex=#fromBags,#toBags
 		local frombag,tobag = fromBags[frombagIndex],toBags[tobagIndex]
 		local fromslot,toslot=GetContainerNumSlots(frombag),GetContainerNumSlots(tobag)
 		--移动
@@ -459,7 +459,7 @@ local function saveToBank()
 	for k,v in pairs(JPack.bankSlotTypes) do
 		--针对每种不同的背包,k is type,v is slots
 		local bkTypes,bagTypes=JPack.bankSlotTypes[k],JPack.bagSlotTypes[k]
-		local bkBag,bag=table.getn(bkTypes),table.getn(bagTypes)
+		local bkBag,bag=#bkTypes,#bagTypes
 		local bkSlot,slot=GetContainerNumSlots(bkTypes[bkBag]),GetContainerNumSlots(bagTypes[bag])
 		--保存
 		while(true) do
@@ -496,7 +496,7 @@ local function loadFromBank()
 	for k,v in pairs(JPack.bankSlotTypes) do
 		--针对每种不同的背包,k is type,v is slots
 		local bkTypes,bagTypes=JPack.bankSlotTypes[k],JPack.bagSlotTypes[k]
-		local bkBag,bag=table.getn(bkTypes),table.getn(bagTypes)
+		local bkBag,bag=#bkTypes,#bagTypes
 		local bkSlot,slot=GetContainerNumSlots(bkTypes[bkBag]),GetContainerNumSlots(bagTypes[bag])
 		--保存
 		while(true) do
@@ -546,7 +546,7 @@ itemEquipLoc, itemTexture = GetItemInfo(name)
 				bagTypes[subType]={}
 			end
 			local t = bagTypes[subType]
-			t[table.getn(t)+1]=i
+			t[#t+1]=i
 		end
 	end
 
@@ -563,7 +563,7 @@ itemEquipLoc, itemTexture = GetItemInfo(name)
 					bankSlotTypes[subType]={}
 				end
 				local t = bankSlotTypes[subType]
-				t[table.getn(t)+1]=i
+				t[#t+1]=i
 			end
 		end
 	end
@@ -588,7 +588,7 @@ local function getPackingItems()
 	local c=1
 	local items={}
 	if JPackDB.asc then
-		for i=1,table.getn(JPack.packingBags) do
+		for i=1,#JPack.packingBags do
 			local num = GetContainerNumSlots(JPack.packingBags[i]) 
 			for j = 1,num do
 				items[c]=getJPackItem(JPack.packingBags[i],j)
@@ -596,7 +596,7 @@ local function getPackingItems()
 			end
 		end
 	else
-		for i=table.getn(JPack.packingBags),1,-1 do
+		for i=#JPack.packingBags,1,-1 do
 			local num = GetContainerNumSlots(JPack.packingBags[i]) 
 			for j = num,1,-1 do
 				items[c]=getJPackItem(JPack.packingBags[i],j)
@@ -615,7 +615,7 @@ local function startPack()
 	bagSize=count
 	local sorted = jsort(items)
 	debug("sorted...")
-	--[[for i=1,table.getn(sorted) do
+	--[[for i=1,#sorted do
 		debug(getCompareStr(sorted[i]))
 	end]]
 	sortTo(items,sorted)
@@ -627,7 +627,7 @@ end
 local function getSlotId(packIndex)
 	local slot=packIndex
 	if JPackDB.asc then
-		for i=1,table.getn(JPack.packingBags) do
+		for i=1,#JPack.packingBags do
 			local num=GetContainerNumSlots(JPack.packingBags[i]) 
 			if(slot<=num)then
 				return JPack.packingBags[i],slot
@@ -635,7 +635,7 @@ local function getSlotId(packIndex)
 			slot = slot - num
 		end
 	else
-		for i=table.getn(JPack.packingBags),1,-1 do
+		for i=#JPack.packingBags,1,-1 do
 			local num=GetContainerNumSlots(JPack.packingBags[i]) 
 			if(slot<=num)then
 				return JPack.packingBags[i],1+num-slot
@@ -713,7 +713,7 @@ local function moveOnce()
 					current[i]=x
 					if(current[slot]==nil)then
 						--锁定空格
-						lockedSlots[table.getn(lockedSlots)+1]=i
+						lockedSlots[#lockedSlots+1]=i
 					end
 				end
 			end
@@ -1032,9 +1032,9 @@ function JPack.OnUpdate(self, el)
 			JPack.packingGroupIndex=JPack.packingGroupIndex + 1
 			debug("index", JPack.packingGroupIndex)
 			JPack.packingBags=JPack.bagGroups[JPack.packingGroupIndex]
-			debug("JPack.bagGroups . size = ",table.getn(JPack.bagGroups))
-			for i=1,table.getn(JPack.bagGroups) do
-				for j=1,table.getn(JPack.bagGroups[i]) do
+			debug("JPack.bagGroups . size = ",#JPack.bagGroups)
+			for i=1,#JPack.bagGroups do
+				for j=1,#JPack.bagGroups[i] do
 					debug("i", i, "j", j..":", JPack.bagGroups[i][j])
 				end
 			end
