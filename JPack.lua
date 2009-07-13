@@ -850,23 +850,22 @@ JPack.OnLoad = {}
 JPack.OnLoad_GB = {}
 
 function JPack:ADDON_LOADED(event, addon)
-	if addon == 'JPack' then
-		debug'JPack loaded'
-		JPackDB = JPackDB or {}
-		
-		print(format('%s %s', version, L["HELP"]))
-		self:UnregisterEvent("ADDON_LOADED")
-		
-		
-		JPack:RegisterEvent"ADDON_LOADED"
-		JPack:RegisterEvent"BANKFRAME_OPENED"
-		JPack:RegisterEvent"BANKFRAME_CLOSED"
-		JPack:RegisterEvent"GUILDBANKFRAME_CLOSED"
-		JPack:RegisterEvent"GUILDBANKFRAME_OPENED"
-		
-		self.ADDON_LOADED = nil
-	end
+	if addon ~= 'JPack' then return end
+	debug'JPack loaded'
+	JPackDB = JPackDB or {}
+	
+	print(format('%s %s', version, L["HELP"]))
+	self:UnregisterEvent("ADDON_LOADED")
+	
+	
+	JPack:RegisterEvent"BANKFRAME_OPENED"
+	JPack:RegisterEvent"BANKFRAME_CLOSED"
+	JPack:RegisterEvent"GUILDBANKFRAME_CLOSED"
+	JPack:RegisterEvent"GUILDBANKFRAME_OPENED"
+	
+	self.ADDON_LOADED = nil
 end
+JPack:RegisterEvent"ADDON_LOADED"
 
 function JPack:BANKFRAME_OPENED()
 	JPack.bankOpened = true

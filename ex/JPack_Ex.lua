@@ -148,25 +148,14 @@ local function onLoad()
 		BuildButton(BagginsBag1, 45, 20, 'TOPRIGHT', -30, -6)
 		BuildButton(BagginsBag12, 45, 20, 'TOPRIGHT', -30, -6)
 		
-	elseif IsAddOnLoaded('Bagnon') then
-		if BagnonFrame then
-			local id = 0
-			hooksecurefunc(BagnonFrame, 'Create', function()
-				local framename = format('BagnonFrame%d', id)
-				id = id + 1
-				local f = getglobal(framename)
-				if not f then return end
-				BuildButton(f, 45, 20, 'TOPRIGHT', -30, -7):SetFrameStrata('FULLSCREEN')
-			end)
-		else
-			local id = 1
-			hooksecurefunc(Bagnon.Frame, 'New', function(self, name)
-				local f = getglobal('BagnonFrame'..id)
-				if not f then return end
-				BuildButton(f, 45, 20, 'TOPRIGHT', -50, -8):SetFrameStrata('FULLSCREEN')
-				id = id + 1
-			end)
-		end
+	--[[elseif IsAddOnLoaded('Bagnon') then
+		local id = 1
+		hooksecurefunc(Bagnon.Frame, 'New', function(self, name)
+			local f = getglobal('BagnonFrame'..id)
+			if not f then return end
+			BuildButton(f, 45, 20, 'TOPRIGHT', -50, -8):SetFrameStrata('FULLSCREEN')
+			id = id + 1
+		end)]]
 	elseif IsAddOnLoaded('BaudBag') then
 		BuildButton(BBCont1_1, 45, 20, 'TOPRIGHT', -40, 20)
 		BuildButton(BBCont2_1, 45, 20, 'TOPRIGHT', -40, 20)
@@ -187,7 +176,7 @@ local function onLoad()
 			BuildButton(OneBankFrame, 60, 20, 'TOPRIGHT', -105, -6)
 		end
 		
-	else -- blizzy bag
+	else
 		BuildButton(ContainerFrame1, 45, 20, 'TOPRIGHT', -10, -28)
 		BuildButton(BankFrame, 45, 20, 'TOPRIGHT', -50, -15)
 	end

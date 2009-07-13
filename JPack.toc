@@ -3,7 +3,7 @@
 ## Title: JPack
 ## Notes: Quick (re)sort out your items in your bags/bank/guildbank!
 ## Notes-zhCN: 背包整理
-## Version: 0.7.3
+## Version: 0.7.4
 ## SavedVariables: JPackDB
 #@debug@
 ## OptionalDeps: tekDebug
@@ -14,7 +14,6 @@
 
 localization\locales.xml
 JPack.lua
-# ConfigPanel.lua
 
 JPackConfig.lua
 
