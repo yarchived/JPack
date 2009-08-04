@@ -1,7 +1,7 @@
 --[[
 	JPack_Ex: A button on you bag frame!
-	orig by zyleon@sohu.com
-	yaroot#gmail _dot_ com
+	orig: zyleon@sohu.com
+	maintenance: yaroot@gmail.com
 ]]
 
 local loc, L = GetLocale(), {
@@ -74,6 +74,8 @@ elseif loc == 'deDE' then
 	L['Set sequence to descend'] = 'Setze absteigende Reihenfolge'
 end
 
+local addon = CreateFrame'frame'
+addon:SetScript('OnEvent', function(self, event, ...) self[event](self, event, ...) end)
 
 local function OnClick(self, button)
 	local access, order
@@ -126,14 +128,15 @@ function BuildButton(parent, width, height, point1, point2, point3)
 	return f
 end
 
-local function ADDON_LOADED(self,event,addon)
+function addon:ADDON_LOADED(event,addon)
 	if addon ~= 'Blizzard_GuildBankUI' then return end
 	BuildButton(GuildBankFrame, 45, 20, 'TOPRIGHT', -25, -15)
-	self:UnregisterEvent('ADDON_LOADED', ADDON_LOADED)
+	self:UnregisterEvent('ADDON_LOADED')
+	self.ADDON_LOADED = nil
 end
 
-local function onLoad()
-	JPack:UnregisterEvent('PLAYER_LOGIN', onLoad)
+function addon:PLAYER_LOGIN()
+	addon:UnregisterEvent('PLAYER_LOGIN')
 	if IsAddOnLoaded('ArkInventory') then
 		local i = 1
 		while i do
@@ -170,10 +173,12 @@ local function onLoad()
 		BuildButton(MyInventoryFrame, 45, 20, 'TOPRIGHT', -15, -35)
 		BuildButton(MyBankFrame, 45, 20, 'TOPRIGHT', -15, -35)
 		
-	elseif IsAddOnLoaded('OneBag') or IsAddOnLoaded('OneBag3') then
-		BuildButton(OneBagFrame, 60, 20, 'TOPRIGHT', -105, -6)
-		if IsAddOnLoaded('OneBank') or IsAddOnLoaded('OneBank3') then
-			BuildButton(OneBankFrame, 60, 20, 'TOPRIGHT', -105, -6)
+	elseif IsAddOnLoaded('OneBag3') or IsAddOnLoaded('OneBank3') then
+		if IsAddOnLoaded('OneBag3') then
+			BuildButton(OneBagFrame, 60, 20, 'TOPRIGHT', -105, -10)
+		end
+		if IsAddOnLoaded('OneBank3') then
+			BuildButton(OneBankFrame, 60, 20, 'TOPRIGHT', -105, -10)
 		end
 		
 	else
@@ -181,7 +186,7 @@ local function onLoad()
 		BuildButton(BankFrame, 45, 20, 'TOPRIGHT', -50, -15)
 	end
 	
-	if JPack.DEV_MOD then JPack:RegisterEvent('ADDON_LOADED', ADDON_LOADED) end
+	if JPack.DEV_MOD then addon:RegisterEvent('ADDON_LOADED') end
 end
 
-JPack:RegisterEvent('PLAYER_LOGIN', onLoad)
+addon:RegisterEvent('PLAYER_LOGIN')

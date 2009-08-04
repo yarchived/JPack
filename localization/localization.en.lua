@@ -1,9 +1,12 @@
 --[=[
 	Language Localization: enUS
 	Translated by: name <email address>
+	
+	DO NOT DELETE THIS FILE
 ]=]
 
-local L = JPackLocale
+local L = {}
+_G.JPackLocale = L
 
 L.TYPE_BAG = "Bag"
 L.TYPE_FISHWEAPON = "Fishing Poles"

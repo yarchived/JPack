@@ -1,11 +1,13 @@
 local DEV_MOD = false
-local debug = function() end
-
---@debug@
+local debug
 local debugf = tekDebug and tekDebug:GetFrame("JPack")--tekDebug
 if debugf then
 	debug = function(...) debugf:AddMessage(string.join(", ", tostringall(...))) end
+else
+	debug = function() end
 end
+
+--@debug@
 DEV_MOD = true
 --@end-debug@
 
@@ -26,70 +28,11 @@ JPack.packingGroupIndex = 1
 JPack.packingBags={}
 JPack.updatePeriod = .1
 
-local version = GetAddOnMetadata("JPack", "Version") or "alpha-version"
+local version = GetAddOnMetadata("JPack", "Version") or "alpha"
+JPack.version = version
 local L = setmetatable(JPackLocale, {__index=function(t,i) return i end})
 
-local RegisterEvent = JPack.RegisterEvent
-local UnregisterEvent = JPack.UnregisterEvent
-local event_table = {}
-
-function JPack:RegisterEvent(event, func)
-	if not func then
-		func = self[event]
-	elseif type(func) == 'string' then
-		func = self[func]
-	end
-	if type(func) ~= 'function' then return end
-
-	local curr = event_table[event]
-	if curr then
-		if type(curr) == 'function' then
-			event_table[event] = {curr, func}
-		else -- table
-			for k, v in pairs(curr) do
-				if v == func then return end
-			end
-			tinsert(curr, func)
-		end
-	else
-		event_table[event] = func
-		RegisterEvent(self,event)
-	end
-end
-
-function JPack:UnregisterEvent(event, func)
-	if not func then
-		func = self[event]
-	elseif type(func) == 'string' then
-		func = self[func]
-	end
-	if type(func) ~= 'function' then return end
-	
-	local curr = event_table[event]
-	if type(curr) == 'function' then
-		event_table[event] = nil
-		UnregisterEvent(self, event)
-	else
-		for k,v in pairs(curr) do
-			if v == func then
-				tremove(curr, k)
-				return
-			end
-		end
-	end
-end
-
-JPack:SetScript("OnEvent", function(self, event, ...)
-	debug('OnEvent', event, ...)
-	local handler = event_table[event]
-	if type(handler) == 'function' then
-		handler(self, event, ...)
-	else
-		for k, func in pairs(handler) do
-			func(self, event, ...)
-		end
-	end
-end)
+JPack:SetScript("OnEvent", function(self, event, ...) self[event](self,event,...) end)
 
 
 local bagSize=0
@@ -119,7 +62,9 @@ local JPACK_STOPPED=0
 =====================================]]
 
 local function print(msg,r,g,b)
-	DEFAULT_CHAT_FRAME:AddMessage('JPack: '..msg, r or .41, g or .8, b or .94)
+	if (not r) or (not g) or (not b) then r, g, b = .41, .8, .94 end
+	msg = 'JPack: '..msg
+	DEFAULT_CHAT_FRAME:AddMessage(msg, r, g, b)
 end
 
 local function CheckCursor()
@@ -852,10 +797,17 @@ JPack.OnLoad_GB = {}
 function JPack:ADDON_LOADED(event, addon)
 	if addon ~= 'JPack' then return end
 	debug'JPack loaded'
+	self:UnregisterEvent("ADDON_LOADED")
+	self.ADDON_LOADED = nil
+	
 	JPackDB = JPackDB or {}
 	
+	local oldver = JPackDB.version
+	if oldver ~= version then
+		JPackDB.version = version
+	end
+	
 	print(format('%s %s', version, L["HELP"]))
-	self:UnregisterEvent("ADDON_LOADED")
 	
 	
 	JPack:RegisterEvent"BANKFRAME_OPENED"
@@ -863,7 +815,6 @@ function JPack:ADDON_LOADED(event, addon)
 	JPack:RegisterEvent"GUILDBANKFRAME_CLOSED"
 	JPack:RegisterEvent"GUILDBANKFRAME_OPENED"
 	
-	self.ADDON_LOADED = nil
 end
 JPack:RegisterEvent"ADDON_LOADED"
 
