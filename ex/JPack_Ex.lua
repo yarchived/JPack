@@ -4,75 +4,7 @@
 	maintenance: yaroot@gmail.com
 ]]
 
-local loc, L = GetLocale(), {
-	['Click'] = 'Click',
-	['Pack'] = 'Pack',
-	
-	['Alt + Left-Click'] = 'Alt + Left-Click',
-	['Packup guildbank'] = 'Packup guildbank',
-	['Shift + Left-Click'] = 'Shift + Right-Click',
-	['Save to the bank'] = 'Save to the bank',
-	['Ctrl + Left-Click'] = 'Ctrl + Right-Click',
-	['Load from the bank'] = 'Load from the bank',
-	['Shift + Right-Click'] = 'Shift + Left-Click',
-	['Set sequence to ascend'] = 'Set sequence to ascend',
-	['Ctrl + Right-Click'] = 'Ctrl + Left-Click',
-	['Set sequence to descend'] = 'Set sequence to descend',
-}
-
-if loc == 'zhCN' then
-	L['Click'] = '点击'
-	L['Pack'] = '整理'
-	
-	L['Alt + Left-Click'] = 'Alt + 左键'
-	L['Packup guildbank'] = '整理公会银行'
-	L['Shift + Left-Click'] = 'Shift + 左键'
-	L['Save to the bank'] = '保存到银行'
-	L['Ctrl + Left-Click'] = 'Ctrl + 左键'
-	L['Load from the bank'] = '从银行取出'
-	L['Shift + Right-Click'] = 'Shift + 右键'
-	L['Set sequence to ascend'] = '正序整理'
-	L['Ctrl + Right-Click'] = 'Ctrl + 右键'
-	L['Set sequence to descend'] = '逆序整理'
-elseif loc == 'zhTW' then
-	L['Click'] = '點擊'
-	L['Pack'] = '整理'
-	
-	L['Alt + Left-Click'] = 'Alt + 左鍵'
-	L['Packup guildbank'] = '整理公會銀行'
-	L['Shift + Left-Click'] = 'Shift + 左鍵'
-	L['Save to the bank'] = '保存到銀行'
-	L['Ctrl + Left-Click'] = 'Ctrl + 左鍵'
-	L['Load from the bank'] = '從銀行取出'
-	L['Shift + Right-Click'] = 'Shift + 右鍵'
-	L['Set sequence to ascend'] = '正序整理'
-	L['Ctrl + Right-Click'] = 'Ctrl + 右鍵'
-	L['Set sequence to descend'] = '逆序整理'
-elseif loc == 'koKR' then
-	L['Click'] = '클릭'
-	L['Pack'] = '정리'
-	
-	L['Shift + Right-Click'] = 'SHIFT + 오른쪽-클릭'
-	L['Save to the bank'] = '은행에 넣기'
-	L['Ctrl + Right-Click'] = 'CTRL + 오른쪽-클릭'
-	L['Load from the bank'] = '은행에서 꺼내기'
-	L['Shift + Left-Click'] = 'SHIFT + 왼쪽-클릭'
-	L['Set sequence to ascend'] = '오름차순으로 설정'
-	L['Ctrl + Left-Click'] = 'CTRL + 왼쪽-클릭'
-	L['Set sequence to descend'] = '내림차순으로 설정'
-elseif loc == 'deDE' then
-	L['Click'] = 'Linksklick'
-	L['Pack'] = 'Packen'
-	
-	L['Shift + Right-Click'] = 'SHIFT + Rechtsklick'
-	L['Save to the bank'] = 'Sichere zur Bank'
-	L['Ctrl + Right-Click'] = 'CTRL + Rechtsklick'
-	L['Load from the bank'] = 'Lade von der Bank'
-	L['Shift + Left-Click'] = 'SHIFT + Linksklick'
-	L['Set sequence to ascend'] = 'Setze aufsteigende Reihenfolge'
-	L['Ctrl + Left-Click'] = 'CTRL + Linksklick'
-	L['Set sequence to descend'] = 'Setze absteigende Reihenfolge'
-end
+local L = _G.JPackLocale
 
 local addon = CreateFrame'frame'
 addon:SetScript('OnEvent', function(self, event, ...) self[event](self, event, ...) end)
@@ -151,6 +83,7 @@ function addon:PLAYER_LOGIN()
 		BuildButton(BagginsBag1, 45, 20, 'TOPRIGHT', -30, -6)
 		BuildButton(BagginsBag12, 45, 20, 'TOPRIGHT', -30, -6)
 		
+	-- you should look into DataBroker display on Bagnon
 	--[[elseif IsAddOnLoaded('Bagnon') then
 		local id = 1
 		hooksecurefunc(Bagnon.Frame, 'New', function(self, name)
