@@ -1,4 +1,4 @@
-﻿--[=[
+--[=[
 	Language Localization: koKR
 	Translated by: fenlis <jungseop.park@gmail.com>
 ]=]
