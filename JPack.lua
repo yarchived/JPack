@@ -341,7 +341,7 @@ end
 --移动到特殊背包，如箭袋，灵魂袋，草药袋，矿石袋
 --flag =0 , 背包， flag = 1 bank
 local function moveToSpecialBag(flag)
-	local bagTypes = nil
+	local bagTypes
 	if flag == 0 then
 		--bagSlotTypes[容器]=[0,1,2,4]  ，bagSlotTypes[箭袋]=[3] 
 		bagTypes = JPack.bagSlotTypes
@@ -482,37 +482,46 @@ packingTypeIndex
 packingBags
 ]]
 local function groupBags()
+	local ignored = JPACK_IGNORE_BAGS or {}
 	local bagTypes={}
 	bagTypes[L.TYPE_BAG]={}
-	bagTypes[L.TYPE_BAG][1]=0
+	if not ignored[0] then
+		bagTypes[L.TYPE_BAG][1]=0
+	end
 	for i=1,4 do
-		local name=GetBagName(i)
-		if(name)then
-			local itemName, itemLink, itemRarity, itemLevel, itemMinLevel, itemType, subType, itemStackCount,
-itemEquipLoc, itemTexture = GetItemInfo(name)
-			debug("Bag[",i,"]Type：",subType)
-			if(bagTypes[subType]==nil)then
-				bagTypes[subType]={}
+		if not ignored[i] then
+			local name=GetBagName(i)
+			if(name)then
+				local itemName, itemLink, itemRarity, itemLevel, itemMinLevel, itemType, subType, itemStackCount,
+	itemEquipLoc, itemTexture = GetItemInfo(name)
+				debug("Bag[",i,"]Type：",subType)
+				if(bagTypes[subType]==nil)then
+					bagTypes[subType]={}
+				end
+				local t = bagTypes[subType]
+				t[#t+1]=i
 			end
-			local t = bagTypes[subType]
-			t[#t+1]=i
 		end
 	end
 
 	local bankSlotTypes={}
 	if(JPack.bankOpened)then
 		bankSlotTypes[L.TYPE_BAG]={}
-		bankSlotTypes[L.TYPE_BAG][1]=-1
+		if not ignored[-1] then
+			bankSlotTypes[L.TYPE_BAG][1]=-1
+		end
 		for i=5,11 do
-			local name=GetBagName(i)
-			if(name)then
-				local itemName, itemLink, itemRarity, itemLevel, itemMinLevel, itemType, subType, itemStackCount,
-itemEquipLoc, itemTexture = GetItemInfo(name)
-				if(bankSlotTypes[subType]==nil)then
-					bankSlotTypes[subType]={}
+			if not ignored[i] then
+				local name=GetBagName(i)
+				if(name)then
+					local itemName, itemLink, itemRarity, itemLevel, itemMinLevel, itemType, subType, itemStackCount,
+	itemEquipLoc, itemTexture = GetItemInfo(name)
+					if(bankSlotTypes[subType]==nil)then
+						bankSlotTypes[subType]={}
+					end
+					local t = bankSlotTypes[subType]
+					t[#t+1]=i
 				end
-				local t = bankSlotTypes[subType]
-				t[#t+1]=i
 			end
 		end
 	end
