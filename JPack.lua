@@ -183,7 +183,11 @@ local function getPerffix(item)
 	if(item.rarity==0)then
 		return "00"..s
 	elseif(IsEquippableItem(item.name) and item.type~=L.TYPE_BAG and item.subType~=L.TYPE_FISHWEAPON) and item.subType~=L.TYPE_MISC then 
-		if(item.rarity <= 1 ) then
+		if(item.rarity <= 1 ) or (item.level<UnitLevel('player')*0.9)then
+			return '02'..s
+		end
+	elseif(item.type==L.TYPE_CONSUMABLE)then
+		if(item.level<UnitLevel('player')*0.9)then
 			return '01'..s
 		end
 	end
