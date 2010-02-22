@@ -485,8 +485,9 @@ bagTypes
 packingTypeIndex
 packingBags
 ]]
+local dummy_table = {}
 local function groupBags()
-	local ignored = JPACK_IGNORE_BAGS or {}
+	local ignored = JPACK_IGNORE_BAGS or dummy_table
 	local bagTypes={}
 	bagTypes[L.TYPE_BAG]={}
 	if not ignored[0] then
@@ -1044,7 +1045,7 @@ SLASH_JPACK1 = "/jpack"
 SLASH_JPACK2 = "/jp"
 SlashCmdList.JPACK = function(msg)
 	local a,b,c=strfind(msg, "(%S+)")
-	if not c then JPack:Pack(); return end
+	if not c then return JPack:Pack() end
 	c = strlower(c)
 	if(c=="asc")then
 		JPack:Pack(nil, 1)
