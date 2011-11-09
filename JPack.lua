@@ -913,6 +913,11 @@ function JPack.OnUpdate(self, el)
 	if elapsed < self.updatePeriod then return end
 	elapsed = 0
 	debug("\nOnUpdate!\n")
+
+    if(InCombatLockdown()) then
+        stopPacking()
+    end
+
 	if DEV_MOD and JPACK_STEP==JPACK_STARTED and JPack.guildbankOpened and JPack.packupguildbank then
 		debug"整理开始, 工会银行整理"
 		
