@@ -1,4 +1,4 @@
-## Interface: 40100
+## Interface: 40200
 
 ## Title: JPack
 ## Notes: Quick (re)sort out your items in your bags/bank/guildbank!
