@@ -1,4 +1,4 @@
-## Interface: 40200
+## Interface: 50001
 
 ## Title: JPack
 ## Notes: Quick (re)sort out your items in your bags/bank/guildbank!
@@ -16,7 +16,7 @@ JPack.lua
 JPackConfig.lua
 
 #@debug@
-ex\localization.lua
-ex\JPack_Ex.lua
+# ex\localization.lua
+# ex\JPack_Ex.lua
 broker\core.lua
 #@end-debug@
